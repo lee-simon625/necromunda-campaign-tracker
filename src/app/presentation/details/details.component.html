@@ -1,0 +1,28 @@
+<div style="display:flex; flex-direction: row; text-align: center; justify-content: space-between;">
+    <div style="flex-basis:20%; flex-grow: 0;" class="border" >
+        <h2>Campaign Details</h2>
+        <ul *ngIf="selectedCampaign" style="text-align: left;">
+            <p>{{selectedCampaign.notes}}</p>
+        </ul>
+    </div>
+    <div style="flex-basis:35%; flex-grow: 0; text-align: center;" class="border">
+        <h2>Gang Details</h2>
+        <ul *ngIf="selectedGang" style="text-align: left;">
+            <p> Gang Name: {{selectedGang.name}}</p>
+            <p> Gang Type: {{selectedGang.gangType}}</p>
+            <p> Gang Value: {{selectedGang.totalValue}}</p>
+            <p> Reputation: {{selectedGang.reputation}}</p>
+        </ul>
+    </div>
+    <div style="flex-basis:45%; flex-grow: 0; text-align: center;" class="border">
+        <h2>Territory Details</h2>
+        <ul *ngIf="selectedTerritory" style="text-align: left">
+            <p>Territory Name: {{selectedTerritory.name}}</p>
+            <p>Income: {{selectedTerritory.income}} // {{selectedTerritory.gangIncome}} </p>
+            <p>Recruitment: {{selectedTerritory.recruit}} // {{selectedTerritory.gangRecruit}}</p>
+            <p>Equipment: {{selectedTerritory.equipment}} // {{selectedTerritory.gangEquipment}}</p>
+            <p>Special: {{selectedTerritory.special}} // {{selectedTerritory.gangSpecial}}</p>
+            <p>Reputation: {{selectedTerritory.reputation}} // {{selectedTerritory.gangReputation}}</p>
+        </ul>
+    </div>
+</div>

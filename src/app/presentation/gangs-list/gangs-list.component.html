@@ -1,0 +1,8 @@
+<div *ngIf="selectedCampaign">
+    <h2>Gangs in {{selectedCampaign.name}}</h2>
+    <ul>
+        <li *ngFor="let gang of gangs">
+            <button (click)="onSelect(gang)">{{gang.player}} - {{gang.name}}</button>
+        </li>
+    </ul>
+</div>
