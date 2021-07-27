@@ -18,4 +18,27 @@ export class Territory {
     
 ) {
 }
+
+static territoryParse(terObj: any) {
+    console.log(terObj);
+    return new Territory(
+        terObj.campaignID,
+        terObj.gangID,
+        terObj.id,
+        terObj.name,
+        terObj.income,
+        terObj.recruit,
+        terObj.equipment,
+        terObj.special,
+        terObj.reputation,
+        terObj.gangIncome,
+        terObj.gangRecruit,
+        terObj.gangEquipment,
+        terObj.gangSpecial,
+        terObj.gangReputation
+    )
+}
+
+
+
 }

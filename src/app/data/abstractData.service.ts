@@ -17,16 +17,16 @@ export abstract class AbstractDataService<T> {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
   };
 
-  baseUrl : string = "http://86.12.177.19:4567/campaign" ;
+  baseUrl : string = "https://86.12.177.19:4567/campaign" ;
 
   getAll(url: string): Observable<any> {
-     return this.http.get(this.baseUrl)
-      .pipe(catchError(this.handleError(`get all ${this.baseUrl}`, "[]")))
+     return this.http.get(this.baseUrl+url)
+      .pipe(catchError(this.handleError(`get all ${this.baseUrl}`, "")))
        
   }
 
-  get(url: string): Observable<T> {
-    return this.http.get<T>(url)
+  get(url: string): Observable<any> {
+    return this.http.get(this.baseUrl+url)
       .pipe(catchError(this.handleError<T>(`get ${url}`)))
   }
 

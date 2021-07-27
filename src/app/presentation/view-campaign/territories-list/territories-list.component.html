@@ -1,5 +1,5 @@
-<div *ngIf="selectedCampaign">
-    <h2>Territories in {{selectedCampaign.name}}</h2>
+<div>
+    <h2>Territories</h2>
     <ul>
         <li *ngFor="let territory of territories">
             <button (click)="onSelect(territory)">{{territory.name}}</button>

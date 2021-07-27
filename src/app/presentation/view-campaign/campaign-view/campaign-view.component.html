@@ -1,0 +1,14 @@
+<div style="display:flex; flex-direction: row;">
+   
+    <app-details style="width: 100%;" [selectedCampaign]="campaign" [selectedGang]="selectedGang" [selectedTerritory]="selectedTerritory">
+    </app-details>
+
+  </div>
+  <div  style="display: flex; justify-content: space-evenly;">
+    <app-gangs-list style="flex-grow:2" [campaignId]="campaignId" [(selectedGang)]="selectedGang"></app-gangs-list>
+    <app-territories-list style="flex-grow:3"  [campaignId]="campaignId" [selectedGang]="selectedGang" [(selectedTerritory)]="selectedTerritory"></app-territories-list>
+  </div>
+
+  <a [routerLink]="['']" routerLinkActive="active">HOME</a>
+ 
+

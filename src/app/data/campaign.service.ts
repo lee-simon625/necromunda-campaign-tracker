@@ -14,15 +14,18 @@ export class CampaignService extends AbstractDataService<Campaign>  {
 
 
   getCampaign(id: number) {
-    return this.get(`/${id}`)
+    return this.get(`/${id}`).pipe(
+      map(jsonObj => {console.log(jsonObj)
+        return jsonObj.map((obj: any) =>  Campaign.campaignParse(obj))
+      })
+    );
   }
 
   getCampaigns() {
 
     return this.getAll("").pipe(
       map(jsonObj => {console.log(jsonObj)
-        // var jsonObj = JSON.parse(str)
-        return jsonObj.map((obj: any) =>  Campaign.parse(obj))
+        return jsonObj.map((obj: any) =>  Campaign.campaignParse(obj))
       })
     );
   }

@@ -1,6 +1,3 @@
-import { JsonpClientBackend } from "@angular/common/http";
-import { map } from "rxjs/operators";
-
 export class Campaign {
 
     constructor(
@@ -10,9 +7,10 @@ export class Campaign {
     ) {
     }
 
-   static parse(campaignObj: any) {        
+    static campaignParse(campaignObj: any) {
         console.log(campaignObj);
-        return new Campaign(campaignObj.id,
+        return new Campaign(
+            campaignObj.id,
             campaignObj.name,
             campaignObj.notes);
     }

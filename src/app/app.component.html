@@ -1,13 +1,4 @@
 <div style="display:flex; flex-direction: column; ">
   <h1 style="text-align:center">{{title}}</h1>
-  <div style="display:flex; flex-direction: row;">
-    <app-campaign-overview style="flex-basis: 20%;" (selectedCampaignChange)="selectedCampaignChange($event)" ></app-campaign-overview>
-    <app-details style="flex-basis: 80%;" [selectedCampaign]="selectedCampaign" [selectedGang]="selectedGang" [selectedTerritory]="selectedTerritory">
-    </app-details>
-
-  </div>
-  <div *ngIf="selectedCampaign" style="display: flex; justify-content: space-evenly;">
-    <app-gangs-list style="flex-grow:2" [selectedCampaign]="selectedCampaign" [(selectedGang)]="selectedGang"></app-gangs-list>
-    <app-territories-list style="flex-grow:3"  [selectedCampaign]="selectedCampaign" [selectedGang]="selectedGang" [(selectedTerritory)]="selectedTerritory"></app-territories-list>
-  </div>
+  <router-outlet></router-outlet>
 </div>

@@ -1,0 +1,23 @@
+<h2 mat-dialog-title>Campaigns</h2>
+<mat-dialog-content>Please Select the campaign you want to view</mat-dialog-content>
+
+<!-- <div >
+    <ul >
+        <li *ngFor="let campaign of campaigns" >
+            <a [routerLink]="['/view', '{{campaign.id}}']" routerLinkActive="active">{{campaign.id}}: {{campaign.name}}</a>
+        </li>
+    </ul>
+</div> -->
+
+<div style="display: flex; justify-content: space-evenly;">
+    <ul style="flex-grow: 1;" class="Campaign">
+        <li *ngFor="let campaign of campaigns">
+            <button mat-button mat-dialog-close (click)="routerToCampaignId(campaign)">{{campaign.id}}:
+                {{campaign.name}}</button>
+        </li>
+    </ul>
+</div>
+
+<mat-dialog-actions>
+    <button mat-button mat-dialog-close>Back</button>
+</mat-dialog-actions>

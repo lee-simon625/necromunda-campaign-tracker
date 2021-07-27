@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AbstractDataService } from './abstractData.service';
 import { Gang } from '../domain/gang.model'
+import { map } from 'rxjs/operators';
 
 
 @Injectable({
@@ -15,7 +16,11 @@ export class GangService extends AbstractDataService<Gang> {
   }
 
   getGangs(campaignID: number) {   
-    return this.getAll(`/${campaignID}/${this.gangUrl}`);
+    return this.getAll(`/${campaignID}/${this.gangUrl}`).pipe(
+      map(jsonObj => {console.log(jsonObj)
+      return jsonObj.map((obj: any) => Gang.gangParse(obj))
+      }) 
+    );
   }
 
   createGang(campaignID: number, gang:Gang) {

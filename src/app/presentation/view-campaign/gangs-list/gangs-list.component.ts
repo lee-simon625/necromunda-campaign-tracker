@@ -12,7 +12,7 @@ export class GangsListComponent {
 
   gangs: any;
 
-  @Input() selectedCampaign!: Campaign  | null
+  @Input() campaignId!: number
 
   @Input() selectedGang!: Gang | null
 
@@ -28,21 +28,17 @@ export class GangsListComponent {
     private gangService: GangService,
   ) { }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if(changes.selectedCampaign){
-
-      this.getGangs();
-     } 
+ 
+  ngOnInit(){
+    this.getGangs()
   }
-
   
 
   getGangs() {
-    if (this.selectedCampaign) {
-    this.gangService.getGangs(this.selectedCampaign.id)
+   
+    this.gangService.getGangs(this.campaignId)
       .subscribe(gangs => this.gangs = gangs)
   }
 
-  }
-
+  
 }

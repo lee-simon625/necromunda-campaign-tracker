@@ -1,8 +1,0 @@
-<h2 style="padding-left: 20px;">Campaign Overview</h2>
-<div style="display: flex; justify-content: space-evenly;">
-    <ul style="flex-grow: 1;" class="Campaign">
-        <li *ngFor="let campaign of campaigns">
-            <button (click)="onSelect(campaign)">{{campaign.id}}: {{campaign.name}}</button>
-        </li>
-    </ul>
-</div>

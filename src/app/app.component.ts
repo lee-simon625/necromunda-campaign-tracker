@@ -10,22 +10,8 @@ import { Territory } from './domain/territory.model';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-
-   selectedCampaign: Campaign | null = null
- 
-   selectedGang: Gang | null = null
-
-   selectedTerritory: Territory |  null = null
- 
-  title = 'Necromunda Campaign Tracker';
-
-
-
-selectedCampaignChange(campaign : Campaign){
-this.selectedCampaign = campaign;
-this.selectedGang  = null;
-this.selectedTerritory = null;
-}
+ title = 'Necromunda Campaign Tracker';
+   
 
 }
 

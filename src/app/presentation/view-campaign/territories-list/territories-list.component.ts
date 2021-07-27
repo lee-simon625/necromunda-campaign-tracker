@@ -14,7 +14,7 @@ export class TerritoriesListComponent {
 
   territories: any;
 
-  @Input() selectedCampaign!: Campaign | null
+  @Input() campaignId!: number
 
   @Input() selectedGang!: Gang | null
 
@@ -31,10 +31,9 @@ export class TerritoriesListComponent {
     private territoryService: TerritoryService,
   ) { }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes.selectedCampaign) {
-      this.getTerritories();
-    }
+  
+  ngOnInit (){
+    this.getTerritories();
   }
 
   resetSelectedTerritory() {
@@ -42,10 +41,10 @@ export class TerritoriesListComponent {
   }
 
   getTerritories() {
-    if (this.selectedCampaign) {
-      this.territoryService.getTerritories(this.selectedCampaign.id)
+   
+      this.territoryService.getTerritories(this.campaignId)
         .subscribe(territories => this.territories = territories)
-    }
+    
 
   }
 
