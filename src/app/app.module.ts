@@ -12,6 +12,7 @@ import { HomeComponent } from './presentation/home/home/home.component';
 import { CampaignSelectorComponent } from './presentation/home/campaign-selector/campaign-selector.component';
 import { MatDialogActions, MatDialogContent, MatDialogModule } from "@angular/material/dialog";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NewCampaignComponent } from './presentation/new-campaign/new-campaign/new-campaign.component';
 
 
 
@@ -35,7 +36,8 @@ const appRoutes: Routes = [
     TerritoriesListComponent,
     DetailsComponent,
     HomeComponent,
-    CampaignSelectorComponent
+    CampaignSelectorComponent,
+    NewCampaignComponent
 
   ],
   imports: [
