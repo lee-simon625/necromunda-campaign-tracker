@@ -10,7 +10,7 @@ import { map } from 'rxjs/operators';
 })
 export class TerritoryService extends AbstractDataService<Territory> {
 
-  private territoryUrl = '/territory';  // URL to web api
+  private territoryUrl = '/territory';  
 
   getTeritory(campaignID: number, id:number) {
     return this.get(`/${campaignID}/${this.territoryUrl}/${id}`);

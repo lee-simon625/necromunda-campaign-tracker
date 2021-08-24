@@ -9,7 +9,7 @@ import { map } from 'rxjs/operators';
 })
 export class GangService extends AbstractDataService<Gang> {
 
-  private gangUrl = '/gang';  // URL to web api
+  private gangUrl = '/gang';  
 
   getGang(campaignID: number, id:number) {
     return this.get(`/${campaignID}/${this.gangUrl}/${id}`);
