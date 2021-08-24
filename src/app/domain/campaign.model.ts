@@ -1,9 +1,10 @@
 export class Campaign {
 
     constructor(
-        public id: number,
+        public id?: number,
         public name?: string,
-        public notes?: string
+        public notes?: string,
+        public password?: string
     ) {
     }
 

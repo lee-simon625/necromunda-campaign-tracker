@@ -31,7 +31,8 @@ export class CampaignService extends AbstractDataService<Campaign>  {
   }
 
   createCampaign(campaign: Campaign) {
-    return this.create("", campaign)
+    console.log(JSON.parse(JSON.stringify(campaign)))
+    return this.create("/new", JSON.parse(JSON.stringify(campaign)))
   }
 
   deleteCampaign(id: number) {

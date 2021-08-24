@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CampaignService } from 'src/app/data/campaign.service';
 import { MatDialog } from '@angular/material/dialog';
 import { CampaignSelectorComponent } from '../campaign-selector/campaign-selector.component';
+import { NewCampaignComponent } from '../new-campaign/new-campaign.component';
 
 @Component({
   selector: 'app-home',
@@ -27,8 +28,17 @@ export class HomeComponent implements OnInit {
   //   });
   // }
 
-  openDialog(): void {
+  viewCampaign(): void {
     let dialogref = this.dialog.open(CampaignSelectorComponent,
+      {
+        width: '500px',
+        height: '250px'
+      }
+    );
+  }
+
+  newCampaign(): void {
+    let dialogref = this.dialog.open(NewCampaignComponent,
       {
         width: '500px',
         height: '250px'

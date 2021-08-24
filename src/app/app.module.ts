@@ -12,7 +12,12 @@ import { HomeComponent } from './presentation/home/home/home.component';
 import { CampaignSelectorComponent } from './presentation/home/campaign-selector/campaign-selector.component';
 import { MatDialogActions, MatDialogContent, MatDialogModule } from "@angular/material/dialog";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NewCampaignComponent } from './presentation/new-campaign/new-campaign/new-campaign.component';
+import { NewCampaignComponent } from './presentation/home/new-campaign/new-campaign.component';
+import { FormsModule } from '@angular/forms';
+import { GangsEditComponent } from './presentation/edit-campaign/gangs-edit/gangs-edit.component';
+import { TerritoriesEditComponent } from './presentation/edit-campaign/territories-edit/territories.component';
+import { CampaignEditComponent } from './presentation/edit-campaign/campaign-edit/campaign-edit.component';
+import { CampaignwizardComponent } from './presentation/campaignwizard/campaignwizard/campaignwizard.component';
 
 
 
@@ -37,7 +42,11 @@ const appRoutes: Routes = [
     DetailsComponent,
     HomeComponent,
     CampaignSelectorComponent,
-    NewCampaignComponent
+    NewCampaignComponent,
+    GangsEditComponent,
+    TerritoriesEditComponent,
+    CampaignEditComponent,
+    CampaignwizardComponent
 
   ],
   imports: [
@@ -46,12 +55,13 @@ const appRoutes: Routes = [
     RouterModule.forRoot(appRoutes,
       { enableTracing: true }),
     MatDialogModule,
-   
+    FormsModule,   
     BrowserAnimationsModule
   ],
 
   entryComponents: [
-    CampaignSelectorComponent
+    CampaignSelectorComponent,
+    NewCampaignComponent
   ],
   providers: [],
   bootstrap: [AppComponent]

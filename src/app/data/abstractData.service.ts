@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 
-import { Observable, of } from 'rxjs';
+import { Observable, of,} from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 
 
@@ -14,7 +14,7 @@ export abstract class AbstractDataService<T> {
     private http: HttpClient) { }
 
   httpOptions = {
-    headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+    headers: new HttpHeaders({ 'Content-Type': 'application/json' , 'Access-Control-Allow-Orogin': '*' })
   };
 
   baseUrl : string = "https://86.12.177.19:4567/campaign" ;
@@ -30,10 +30,14 @@ export abstract class AbstractDataService<T> {
       .pipe(catchError(this.handleError<T>(`get ${url}`)))
   }
 
+
+
   create(url: string, obj: T): Observable<T> {
-    return this.http.post<T>(url, obj, this.httpOptions)
-      .pipe(catchError(this.handleError<T>(`create ${url}`)))
+   
+    return this.http.post<T>(this.baseUrl+url, obj, this.httpOptions)
+      .pipe(catchError(this.handleError<T>(`post ${url}`)))
   }
+
 
   delete(url: string): Observable<T> {
     return this.http.delete<T>(url, this.httpOptions)
@@ -45,6 +49,22 @@ export abstract class AbstractDataService<T> {
       .pipe(catchError(this.handleError<T>(`put ${url}`)))
   }
 
+
+  // private handleError(error: HttpErrorResponse) {
+  //   if (error.status === 0) {
+  //     // A client-side or network error occurred. Handle it accordingly.
+  //     console.error('An error occurred:', error.error);
+  //   } else {
+  //     // The backend returned an unsuccessful response code.
+  //     // The response body may contain clues as to what went wrong.
+  //     console.error(
+  //       `Backend returned code ${error.status}, body was: `, error.error);
+  //   }
+  //   // Return an observable with a user-facing error message.
+  //   return throwError(
+  //     'Something bad happened; please try again later.');
+  // }
+  
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
 
@@ -58,5 +78,6 @@ export abstract class AbstractDataService<T> {
   // protected urlPrefix(): string {
   //   return `campaign/${SelectedCampaignService.getCampaignId()}/`
   // }
+  // , this.httpOptions              , 'Access-Control-Allow-Origin':''
 }
 
