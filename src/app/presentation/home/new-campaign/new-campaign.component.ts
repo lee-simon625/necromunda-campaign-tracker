@@ -23,10 +23,10 @@ export class NewCampaignComponent implements OnInit {
   campaignPassword: string="";
 
   campaignId:any;
-  // modelCampaign = new Campaign(undefined, undefined, undefined, undefined)
+  
 
   newCampaign() {
-    // this.campaignService.createCampaign(this.modelCampaign = new Campaign);
+    
     this.campaignService.createCampaign(this.campaign = new Campaign(undefined, this.campaignName, this.campaignNotes, this.campaignPassword)).subscribe(campaignId => this.campaignId = campaignId)
   }
 
