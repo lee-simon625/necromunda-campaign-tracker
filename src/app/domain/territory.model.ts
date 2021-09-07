@@ -1,7 +1,7 @@
 export class Territory {
-   
+
    constructor(
-    public  campaignID?: number,   
+    public  campaignID?: number,
     public  gangID?: number,
     public  id?: number,
     public  name?: string,
@@ -14,8 +14,8 @@ export class Territory {
     public  gangRecruit?: string ,
     public  gangEquipment?: string ,
     public  gangSpecial?: string ,
-    public  gangReputation?: string
-    
+    public  gangReputation?: string,
+    public  mapLocation?: string
 ) {
 }
 
@@ -35,7 +35,8 @@ static territoryParse(terObj: any) {
         terObj.gangRecruit,
         terObj.gangEquipment,
         terObj.gangSpecial,
-        terObj.gangReputation
+        terObj.gangReputation,
+        terObj.mapLocation
     )
 }
 
