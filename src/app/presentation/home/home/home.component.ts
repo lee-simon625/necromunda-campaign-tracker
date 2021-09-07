@@ -32,7 +32,7 @@ export class HomeComponent implements OnInit {
     let dialogref = this.dialog.open(CampaignSelectorComponent,
       {
         width: '500px',
-        height: '250px'
+       // height: '500px'
       }
     );
   }

@@ -17,20 +17,27 @@ export class NewCampaignComponent implements OnInit {
 
   ngOnInit(): void {
   }
-  campaign:any
-  campaignName: string ="";
-  campaignNotes: string="";
-  campaignPassword: string="";
+  campaign: any
+  campaignName: string = "";
+  campaignNotes: string = "";
+  campaignPassword: string = "";
 
-  campaignId:any;
-  
+  campaignId: any;
+
 
   newCampaign() {
-    
-    this.campaignService.createCampaign(this.campaign = new Campaign(undefined, this.campaignName, this.campaignNotes, this.campaignPassword)).subscribe(campaignId => this.campaignId = campaignId)
+
+    this.campaignService.createCampaign(this.campaign = new Campaign(undefined, this.campaignName, this.campaignNotes, this.campaignPassword)).subscribe(campaignId => {
+      this.campaignId = campaignId;
+    })
+
   }
 
   runWizard() {
+    this.campaignService.createCampaign(this.campaign = new Campaign(undefined, this.campaignName, this.campaignNotes, this.campaignPassword)).subscribe(campaignId => {
+      this.campaignId = campaignId;
+
+    })
 
   }
 
