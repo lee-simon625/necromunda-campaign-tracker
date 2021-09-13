@@ -18,9 +18,11 @@ export class AppComponent implements AfterViewInit {
   a = (2 * Math.PI) / 6;
   r = 50;
 
-  constructor() {
-  }
+  hexagonList = [];
 
+  constructor() {
+
+  }
 
   ngAfterViewInit() {
     this.ctx = (this.canvas.nativeElement as HTMLCanvasElement).getContext('2d');
@@ -49,6 +51,8 @@ export class AppComponent implements AfterViewInit {
   }
 
   drawHexagon(x: number, y: number) {
+    var newHexagon = {};
+
     this.ctx?.beginPath();
     for (let i = 0; i < 6; i++) {
       this.ctx?.lineTo(
@@ -56,6 +60,8 @@ export class AppComponent implements AfterViewInit {
         y + this.r * Math.sin(this.a * i)
       );
     }
+
+    this.hexagonList.push(newHexagon)
     this.ctx?.closePath();
     this.ctx?.stroke();
   }
