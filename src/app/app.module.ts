@@ -18,19 +18,11 @@ import { GangsEditComponent } from './presentation/edit-campaign/gangs-edit/gang
 import { TerritoriesEditComponent } from './presentation/edit-campaign/territories-edit/territories.component';
 import { CampaignEditComponent } from './presentation/edit-campaign/campaign-edit/campaign-edit.component';
 import { CampaignwizardComponent } from './presentation/campaignwizard/campaignwizard/campaignwizard.component';
-
-
-
-
+import { NgxSvgModule } from 'ngx-svg';
 
 const appRoutes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'view/:id', component: CampaignViewComponent }
-
-
-
-
-
 ]
 
 @NgModule({
@@ -55,10 +47,10 @@ const appRoutes: Routes = [
     RouterModule.forRoot(appRoutes,
       { enableTracing: true }),
     MatDialogModule,
-    FormsModule,   
-    BrowserAnimationsModule
+    FormsModule,
+    BrowserAnimationsModule,
+    NgxSvgModule
   ],
-
   entryComponents: [
     CampaignSelectorComponent,
     NewCampaignComponent

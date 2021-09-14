@@ -3,13 +3,27 @@
 <!--  <router-outlet></router-outlet>-->
 <!--</div>-->
 
-<svg height="500" width="500">
-  <polygon points="50 3,100 28,100 75, 50 100,3 75,3 25"
-           stroke="black"
-           fill="blue"stroke-width="2" />
-</svg>
+<svg-container containerId="polygon" [height]="1000">
+  <svg-polygon *ngFor="let hexagon of hexagonList"
+               [borderSize]="hexagon.borderSize"
+               [borderColor]="hexagon.borderColor"
+               [fill]="hexagon.fill"
+               [points]="hexagon.points"
+               (mouseOverEvent)="mouseOver(hexagon)"
+               (mouseOutEvent)="mouseOut(hexagon)">
+  </svg-polygon>
+</svg-container>
 
-<div>
-  <canvas #canvas width="800" height="800"></canvas>
-</div>
+<!--<svg-container containerId="svg-element" height="1000" width="1000">-->
+<!--  <svg-polygon-->
+<!--    [points]=hexagon.points-->
+<!--    [stroke]=hexagon.stroke-->
+<!--    [fill]=hexagon.fill-->
+<!--    [stroke-width]=hexagon.stroke_width-->
+<!--  />-->
+<!--</svg-container>-->
+
+<!--<div>-->
+<!--  <canvas #canvas width="800" height="800"></canvas>-->
+<!--</div>-->
 
