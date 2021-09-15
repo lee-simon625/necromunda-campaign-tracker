@@ -47,17 +47,22 @@ export class AppComponent {
     {id: 11},
     {id: 12}
   ]
+
+  height = 700;
+
   h: number;
   w: number;
 
   constructor() {
-    var width = 1000;
-    var height = 1000;
 
-    this.hexagon2DArray = _buildHexagonList(width, height);
+    this.hexagon2DArray = _buildHexagonList(this.height, this.height);
     this.hexagonList = [].concat(...this.hexagon2DArray);
 
-    _selectHexagonsForTerritories(this.territories, this.hexagon2DArray, width, height,);
+    _selectHexagonsForTerritories(
+      this.territories,
+      this.hexagon2DArray,
+      this.height,
+      this.height,);
   }
 
   mouseOver(hexagon) {
@@ -84,15 +89,18 @@ export class AppComponent {
 
 
 function _selectHexagonsForTerritories(territories, hexagon2DArray, width, height) {
+  const columnLength = hexagon2DArray.length;
+  const rowLength = hexagon2DArray[0].length;
   var selectedHexagonIndexes = [];
-  while (selectedHexagonIndexes.length < territories.length) {
-    let hexagonIndex = [getRandomArbitrary(0, hexagon2DArray.length - 1), getRandomArbitrary(0, hexagon2DArray[0].length - 1)];
+
+  while (selectedHexagonIndexes.length < territories.length &&
+  selectedHexagonIndexes.length < (rowLength * columnLength) - ((rowLength - 1) * 2) + ((columnLength - 1) * 2)) {
+    let hexagonIndex = [getRandomArbitrary(0, columnLength - 1), getRandomArbitrary(0, rowLength - 1)];
     let tempHexagon = hexagon2DArray[hexagonIndex[0]][hexagonIndex[1]];
 
-    if (tempHexagon.centre[0] > a * 3 &&
-      tempHexagon.centre[0] < width - a * 3 &&
-      tempHexagon.centre[1] > a * 3 &&
-      tempHexagon.centre[1] < height - a * 3 &&
+    if (
+      hexagonIndex[0] > 0 && hexagonIndex[0] <  columnLength-1  &&
+      hexagonIndex[1] > 0 && hexagonIndex[1] < rowLength-1 &&
       !selectedHexagonIndexes.includes(hexagonIndex) &&
       hexagonIndex) {
 

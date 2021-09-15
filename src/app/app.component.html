@@ -3,15 +3,15 @@
 <!--  <router-outlet></router-outlet>-->
 <!--</div>-->
 
-<svg-container containerId="polygon" [height]="1000">
+<svg-container containerId="polygon" [height]="this.height">
   <svg-polygon *ngFor="let hexagon of hexagonList"
                [borderSize]="hexagon.borderSize"
                [borderColor]="hexagon.borderColor"
                [fill]="hexagon.fill"
-               [points]="hexagon.points"
-               (mouseOverEvent)="mouseOver(hexagon)"
-               (mouseOutEvent)="mouseOut(hexagon)"
-               (clickEvent)="onClick(hexagon)">
+               [points]="hexagon.points">
+<!--               (mouseOverEvent)="mouseOver(hexagon)"-->
+<!--               (mouseOutEvent)="mouseOut(hexagon)"-->
+<!--               (clickEvent)="onClick(hexagon)">-->
   </svg-polygon>
 </svg-container>
 
