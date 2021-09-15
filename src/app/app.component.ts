@@ -45,18 +45,10 @@ export class AppComponent {
     {id: 9},
     {id: 10},
     {id: 11},
-    {id: 12},
-    {id: 5},
-    {id: 6},
-    {id: 7},
-    {id: 8},
-    {id: 9},
-    {id: 10},
-    {id: 11},
     {id: 12}
   ]
 
-  height = 1000;
+  height = 800;
 
   h: number;
   w: number;
@@ -68,9 +60,7 @@ export class AppComponent {
 
     _selectHexagonsForTerritories(
       this.territories,
-      this.hexagon2DArray,
-      this.height,
-      this.height,);
+      this.hexagon2DArray);
   }
 
   mouseOver(hexagon) {
@@ -96,28 +86,41 @@ export class AppComponent {
 }
 
 
-function _selectHexagonsForTerritories(territories, hexagon2DArray, width, height) {
+function _selectHexagonsForTerritories(territories, hexagon2DArray) {
   const columnLength = hexagon2DArray.length;
   const rowLength = hexagon2DArray[0].length;
+
+  let seedIndex = [getRandomArbitrary(1, columnLength - 2), getRandomArbitrary(1, rowLength - 2)];
+
   var selectedHexagonIndexes = [];
+  var selectableOptions = [];
+  _addNewOptions(seedIndex, selectedHexagonIndexes, selectableOptions);
 
   while (selectedHexagonIndexes.length < territories.length &&
   selectedHexagonIndexes.length < (rowLength * columnLength) - ((rowLength - 1) * 2) + ((columnLength - 1) * 2)) {
-    let hexagonIndex = [getRandomArbitrary(0, columnLength - 1), getRandomArbitrary(0, rowLength - 1)];
-    let tempHexagon = hexagon2DArray[hexagonIndex[0]][hexagonIndex[1]];
 
-    if (
-      hexagonIndex[0] > 0 && hexagonIndex[0] <  columnLength-1  &&
-      hexagonIndex[1] > 0 && hexagonIndex[1] < rowLength-1 &&
-      !selectedHexagonIndexes.includes(hexagonIndex[0]+hexagonIndex[1]*8) &&
-      hexagonIndex) {
+    var hexagonIndex = selectableOptions[getRandomArbitrary(1, selectableOptions.length - 1)];
+
+    if (!selectedHexagonIndexes.includes(hexagonIndex[0] + hexagonIndex[1] * 8)) {
 
 
-      selectedHexagonIndexes.push(hexagonIndex[0]+hexagonIndex[1]*8);
-      tempHexagon.fill = 'rgba(50, 50, 200, 0.5)'
+      selectedHexagonIndexes.push(hexagonIndex[0] + hexagonIndex[1] * 8);
+
+      _removeOption(hexagonIndex, selectableOptions);
+
+      _addNewOptions(hexagonIndex, selectedHexagonIndexes, selectableOptions);
 
     }
   }
+}
+
+function _removeOption(hexagonIndex, selectableOptions) {
+
+}
+
+function _addNewOptions(hexagon, selectedHexagonIndexes, selectableOptions) {
+
+  selectableOptions.push();
 }
 
 function _buildHexagonList(width, height) {
@@ -157,8 +160,3 @@ function _calcHexagonCoOrds(x: number, y: number) {
 function getRandomArbitrary(min, max) {
   return Math.round(Math.random() * (max - min) + min);
 }
-
-
-// -   -
-// - = -
-//   -
