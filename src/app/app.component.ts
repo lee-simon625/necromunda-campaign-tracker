@@ -45,10 +45,18 @@ export class AppComponent {
     {id: 9},
     {id: 10},
     {id: 11},
+    {id: 12},
+    {id: 5},
+    {id: 6},
+    {id: 7},
+    {id: 8},
+    {id: 9},
+    {id: 10},
+    {id: 11},
     {id: 12}
   ]
 
-  height = 700;
+  height = 1000;
 
   h: number;
   w: number;
@@ -101,11 +109,11 @@ function _selectHexagonsForTerritories(territories, hexagon2DArray, width, heigh
     if (
       hexagonIndex[0] > 0 && hexagonIndex[0] <  columnLength-1  &&
       hexagonIndex[1] > 0 && hexagonIndex[1] < rowLength-1 &&
-      !selectedHexagonIndexes.includes(hexagonIndex) &&
+      !selectedHexagonIndexes.includes(hexagonIndex[0]+hexagonIndex[1]*8) &&
       hexagonIndex) {
 
 
-      selectedHexagonIndexes.push(hexagonIndex);
+      selectedHexagonIndexes.push(hexagonIndex[0]+hexagonIndex[1]*8);
       tempHexagon.fill = 'rgba(50, 50, 200, 0.5)'
 
     }
