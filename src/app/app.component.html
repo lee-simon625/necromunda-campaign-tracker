@@ -8,11 +8,15 @@
                [borderSize]="hexagon.borderSize"
                [borderColor]="hexagon.borderColor"
                [fill]="hexagon.fill"
-               [points]="hexagon.points">
-<!--               (mouseOverEvent)="mouseOver(hexagon)"-->
-<!--               (mouseOutEvent)="mouseOut(hexagon)"-->
-<!--               (clickEvent)="onClick(hexagon)">-->
+               [points]="hexagon.points"
+               (clickEvent)="onClick(hexagon)">
+    <!--               (mouseOverEvent)="mouseOver(hexagon)"-->
+    <!--               (mouseOutEvent)="mouseOut(hexagon)"-->
   </svg-polygon>
+  <svg-text *ngFor="let hexagon of hexagonList"
+            [size]="10" [text]="locationToCode(hexagon.location)"
+            [x]="coordToInt(hexagon.centre)[0]" [y]="coordToInt(hexagon.centre)[1]"></svg-text>
+
 </svg-container>
 
 <!--<svg-container containerId="svg-element" height="1000" width="1000">-->
