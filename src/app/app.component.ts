@@ -23,6 +23,9 @@ const a = 50;
 // height
 const h = Math.sqrt(3) * a;
 
+var rowLength: number;
+var columnLength: number;
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -56,6 +59,10 @@ export class AppComponent {
   constructor() {
 
     this.hexagon2DArray = _buildHexagonList(this.height, this.height);
+    rowLength = this.hexagon2DArray.length;
+    columnLength = this.hexagon2DArray[0].length;
+
+
     this.hexagonList = [].concat(...this.hexagon2DArray);
 
     _selectHexagonsForTerritories(
@@ -86,41 +93,57 @@ export class AppComponent {
 }
 
 
-function _selectHexagonsForTerritories(territories, hexagon2DArray) {
-  const columnLength = hexagon2DArray.length;
-  const rowLength = hexagon2DArray[0].length;
 
-  let seedIndex = [getRandomArbitrary(1, columnLength - 2), getRandomArbitrary(1, rowLength - 2)];
+function _selectHexagonsForTerritories(territories, hexagon2DArray) {
+  let seedIndex = [getRandomArbitrary(1, rowLength - 2), getRandomArbitrary(1, columnLength - 2)];
 
   var selectedHexagonIndexes = [];
   var selectableOptions = [];
   _addNewOptions(seedIndex, selectedHexagonIndexes, selectableOptions);
 
   while (selectedHexagonIndexes.length < territories.length &&
-  selectedHexagonIndexes.length < (rowLength * columnLength) - ((rowLength - 1) * 2) + ((columnLength - 1) * 2)) {
+  selectedHexagonIndexes.length < (columnLength * rowLength) - ((columnLength - 1) * 2) + ((rowLength - 1) * 2)) {
 
-    var hexagonIndex = selectableOptions[getRandomArbitrary(1, selectableOptions.length - 1)];
+    var hexagonIndexCode = selectableOptions[getRandomArbitrary(1, selectableOptions.length - 1)];
+    var hexagonIndex = _codeToCoord(hexagonIndexCode);
 
-    if (!selectedHexagonIndexes.includes(hexagonIndex[0] + hexagonIndex[1] * 8)) {
+    if (!selectedHexagonIndexes.includes(hexagonIndexCode)) {
 
+      selectedHexagonIndexes.push(hexagonIndexCode);
 
-      selectedHexagonIndexes.push(hexagonIndex[0] + hexagonIndex[1] * 8);
+      _removeOption(hexagonIndexCode, selectableOptions);
 
-      _removeOption(hexagonIndex, selectableOptions);
-
-      _addNewOptions(hexagonIndex, selectedHexagonIndexes, selectableOptions);
+      _addNewOptions(hexagonIndexCode, selectedHexagonIndexes, selectableOptions);
 
     }
   }
 }
 
-function _removeOption(hexagonIndex, selectableOptions) {
-
+function _codeToCoord(hexagonIndexCode: number) {
+  return []
+}
+function _coordToCcode(hexagonCoord: number[]) {
+  return 0
 }
 
-function _addNewOptions(hexagon, selectedHexagonIndexes, selectableOptions) {
+function _removeOption(hexagonIndexCode, selectableOptions) {
+  var optionIndex = selectableOptions.findIndex(hexagonIndex);
+  if (optionIndex) {
+    selectableOptions.splice(optionIndex, 1);
+  }
+}
 
+function _addNewOptions(hexagonIndexCode, selectedHexagonIndexes, selectableOptions) {
+
+  _generateSeroundingHexagonCodes(_codeToCoord(hexagonIndexCode);
+//todo
   selectableOptions.push();
+}
+
+function _generateSeroundingHexagonCodes(coord: number[]) {
+  var surroundingIndexCodes = [];
+  //todo
+  return surroundingIndexCodes
 }
 
 function _buildHexagonList(width, height) {
