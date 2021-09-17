@@ -103,30 +103,14 @@ export class AppComponent {
 
     this.hexagonList = [].concat(...this.hexagon2DArray);
 
-    var selectedAndOptions = _selectHexagonsForTerritories(this.territories);
-
-
-    selectedAndOptions[0].map(code => _codeToCoord(code)).forEach(coord =>
-      this.hexagon2DArray[coord[0]][coord[1]].fill = 'rgba(200, 50, 50, 0.2)'
-    );
-
-    this.hexagon2DArray[selectedAndOptions[2][0]][selectedAndOptions[2][1]].fill = 'rgba(250, 250, 250, 0.2)'
-
-    selectedAndOptions[1].map(code => _codeToCoord(code)).forEach(coord => {
-        var hex = this.hexagon2DArray[coord[0]][coord[1]]
-
-        hex.fill = hex.fill.replace(/, 0.2\)/i, ', 0.5)');
-      }
-    );
-
   }
 
   coordToInt(numArr) {
     return [parseInt(numArr[0].toString()), parseInt(numArr[1].toString())];
   }
 
-  locationToCode(location):string {
-    return (location[0] + location[1]*_multiplier()).toString()
+  locationToCode(location): string {
+    return (location[0] + location[1] * _multiplier()).toString()
   }
 
   mouseOver(hexagon) {
@@ -142,18 +126,26 @@ export class AppComponent {
   }
 
   onClick(hexagon) {
-    if (hexagon.clicked) {
-      hexagon.fill = 'rgba(100, 100, 20, 0.5)'
-    } else {
-      hexagon.fill = 'rgba(200, 50, 50, 0.2)'
-    }
-    hexagon.clicked = !hexagon.clicked
+    var selectedAndOptions = _selectHexagonsForTerritories(hexagon.location, this.territories);
+
+
+    selectedAndOptions[0].map(code => _codeToCoord(code)).forEach(coord =>
+      this.hexagon2DArray[coord[0]][coord[1]].fill = 'rgba(200, 50, 50, 0.2)'
+    );
+
+    this.hexagon2DArray[selectedAndOptions[2][0]][selectedAndOptions[2][1]].fill = 'rgba(250, 250, 250, 0.2)'
+
+    selectedAndOptions[1].map(code => _codeToCoord(code)).forEach(coord => {
+        var hex = this.hexagon2DArray[coord[0]][coord[1]]
+
+        hex.fill = hex.fill.replace(/, 0.2\)/i, ', 0.5)');
+      }
+    );
   }
 }
 
 
-function _selectHexagonsForTerritories(territories) {
-  let seedCoord: number[] = [getRandomArbitrary(1, rowLength - 2), getRandomArbitrary(1, columnLength - 2)];
+function _selectHexagonsForTerritories(seedCoord, territories) {
   var selectedHexagonCodes: number[] = [_coordToCode(seedCoord)];
   var selectableOptions: number[] = _getNewOptions(_coordToCode(seedCoord), selectedHexagonCodes);
 
@@ -208,7 +200,7 @@ function _buildHexagonList(width, height) {
     var hexagonRow = []
     for (let y = a * 2; y <= (height - a * 2); y += h) {
       var hex: Hexagon = _buildHexagon(x, alternate ? y + h / 2 : y)
-      hex.location = [hexagonRow.length, hexagonList.length]
+      hex.location = [hexagonList.length, hexagonRow.length]
       hexagonRow.push(hex);
     }
     alternate = !alternate
