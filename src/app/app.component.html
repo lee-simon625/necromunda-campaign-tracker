@@ -6,7 +6,7 @@
 
 
 <div #map>
-  <svg-container [viewBox]="viewBox" containerId="map" [height]="2000">
+  <svg-container [viewBox]="viewBox" containerId="map" [height]="height">
     <svg-polygon *ngFor="let hexagon of hexagonList"
                  [borderColor]="hexagon.borderColor"
                  [fill]="hexagon.fill"

@@ -18,8 +18,8 @@ interface Hexagon {
   location?: number[];
 }
 
-const a = 50;
-const height = 1000;
+const a = 80;
+
 // width
 // var w = a * 2;
 
@@ -60,11 +60,12 @@ export class AppComponent {
   @ViewChild('map')
   map: ElementRef;
 
-  viewBox = [0,0,1000,1000];
+  height = 1000;
+  viewBox = [0, 0, this.height, this.height];
 
   constructor() {
 
-    this.hexagon2DArray = _buildHexagonList(height, height);
+    this.hexagon2DArray = _buildHexagonList(this.height, this.height);
 
     this.hexagonList = [].concat(...this.hexagon2DArray);
   }
@@ -83,7 +84,7 @@ export class AppComponent {
 
   onClick(hexagon) {
     var seedCoord = hexagon.location
-    if (   seedCoord[0] > 0 && seedCoord[0] < rowLength - 1 &&
+    if (seedCoord[0] > 0 && seedCoord[0] < rowLength - 1 &&
       seedCoord[1] > 0 && seedCoord[1] < columnLength - 1) {
 
       // this.hexagonList.forEach(hex => hex.fill = 'rgba(100, 100, 20, 0.2)')
@@ -95,7 +96,7 @@ export class AppComponent {
   }
 }
 
-function _setHexSideLength(territoryCount){
+function _setHexSideLength(territoryCount) {
 
 }
 
@@ -180,7 +181,7 @@ function _buildHexagonList(width, height) {
   var alternate = false;
   var hexagonList = [];
 
-  for (let x = a * 2 ; x <= (width - a * 2); x += a * 1.5) {
+  for (let x = a * 1.8; x <= (width - a); x += a * 1.5) {
     var hexagonRow = []
     for (let y = a; y <= (height - a * 2); y += h) {
       var hex: Hexagon = _buildHexagon(x, alternate ? y + h / 2 : y)
