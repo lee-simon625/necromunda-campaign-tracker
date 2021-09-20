@@ -18,8 +18,8 @@ interface Hexagon {
   location?: number[];
 }
 
-const a = 150;
-const height = 2000;
+const a = 50;
+const height = 1000;
 // width
 // var w = a * 2;
 
@@ -60,7 +60,10 @@ export class AppComponent {
   @ViewChild('map')
   map: ElementRef;
 
+  viewBox = [0,0,1000,1000];
+
   constructor() {
+
     this.hexagon2DArray = _buildHexagonList(height, height);
 
     this.hexagonList = [].concat(...this.hexagon2DArray);
@@ -177,7 +180,7 @@ function _buildHexagonList(width, height) {
   var alternate = false;
   var hexagonList = [];
 
-  for (let x = a * 1.1 ; x <= (width - a * 2); x += a * 1.5) {
+  for (let x = a * 2 ; x <= (width - a * 2); x += a * 1.5) {
     var hexagonRow = []
     for (let y = a; y <= (height - a * 2); y += h) {
       var hex: Hexagon = _buildHexagon(x, alternate ? y + h / 2 : y)

@@ -3,19 +3,18 @@
 <!--  <router-outlet></router-outlet>-->
 <!--</div>-->
 
-<svg-container #map containerId="map" [height]="2000">
-  <svg-polygon *ngFor="let hexagon of hexagonList"
-               [borderSize]="hexagon.borderSize"
-               [borderColor]="hexagon.borderColor"
-               [fill]="hexagon.fill"
-               [points]="hexagon.points"
-               (clickEvent)="onClick(hexagon)"
-               (mouseOverEvent)="mouseOver(hexagon)"
-               (mouseOutEvent)="mouseOut(hexagon)">
-  </svg-polygon>
-</svg-container>
 
-<!--<div>-->
-<!--  <canvas #canvas width="800" height="800"></canvas>-->
-<!--</div>-->
+
+<div #map>
+  <svg-container [viewBox]="viewBox" containerId="map" [height]="2000">
+    <svg-polygon *ngFor="let hexagon of hexagonList"
+                 [borderColor]="hexagon.borderColor"
+                 [fill]="hexagon.fill"
+                 [points]="hexagon.points"
+                 (clickEvent)="onClick(hexagon)"
+                 (mouseOverEvent)="mouseOver(hexagon)"
+                 (mouseOutEvent)="mouseOut(hexagon)">
+    </svg-polygon>
+  </svg-container>
+</div>
 
