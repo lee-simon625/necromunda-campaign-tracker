@@ -18,8 +18,8 @@ interface Hexagon {
   location?: number[];
 }
 
-const a = 70;
-
+const a = 150;
+const height = 2000;
 // width
 // var w = a * 2;
 
@@ -54,15 +54,14 @@ export class AppComponent {
     {id: 12},
   ]
 
-  height = 1000;
-
   h: number;
   w: number;
 
+  @ViewChild('map')
+  map: ElementRef;
+
   constructor() {
-
-
-    this.hexagon2DArray = _buildHexagonList(this.height, this.height);
+    this.hexagon2DArray = _buildHexagonList(height, height);
 
     this.hexagonList = [].concat(...this.hexagon2DArray);
   }
@@ -98,42 +97,28 @@ function _setHexSideLength(territoryCount){
 }
 
 function _setSelectedColours(codeList, hexagon2DArray) {
-  // codeList.map(code => _codeToCoord(code)).forEach(coord => {
-  //   var hex = hexagon2DArray[coord[0]][coord[1]];
-  //   hex.clickedColour = 'rgba(200, 50, 50, 0.8)';
-  //   hex.mouseOverColour = 'rgba(200, 50, 50, 0.5)';
-  //   hex.mouseOutColour = 'rgba(200, 50, 50, 0.2)';
-  //
-  //   hex.fill = hex.mouseOutColour;
-  // });
-
   hexagon2DArray.forEach((row, x) => {
     row.forEach((hex, y) => {
-
       if (codeList.includes(_coordToCode([x, y]))) {
         //  selected
-
-        hex.selected = true;
-
         hex.borderColor = 'rgba(200, 50, 50, 1)';
         hex.clickedColour = 'rgba(200, 50, 50, 0.8)';
         hex.mouseOverColour = 'rgba(200, 50, 50, 0.5)';
         hex.mouseOutColour = 'rgba(200, 50, 50, 0.2)';
 
         hex.fill = hex.mouseOutColour;
+        hex.selected = true;
+
       } else {
         //  border
-
-        hex.selected = false;
-
         hex.borderColor = 'rgba(0, 0, 0, 0)';
-        // hex.clickedColour = 'rgba(200, 50, 50, 0.8)';
-        // hex.mouseOverColour = 'rgba(200, 50, 50, 0.5)';
+        hex.clickedColour = 'rgba(0, 0, 0, 0.3)';
+        hex.mouseOverColour = 'rgba(0, 0, 0, 0.3)';
         hex.mouseOutColour = 'rgba(0, 0, 0, 0.3)';
 
         hex.fill = hex.mouseOutColour;
+        hex.selected = false;
       }
-
     });
   });
 }
@@ -215,6 +200,8 @@ function _buildHexagon(x, y) {
     borderSize: 2,
     selected: false,
     borderColor: 'rgba(0, 0, 0, 0)',
+    clickedColour: 'rgba(0, 0, 0, 0.3)',
+    mouseOverColour: 'rgba(0, 0, 0, 0.3)',
     fill: 'rgba(0, 0, 0, 0.3)'
   }
 }

@@ -3,7 +3,7 @@
 <!--  <router-outlet></router-outlet>-->
 <!--</div>-->
 
-<svg-container containerId="polygon" [height]="this.height">
+<svg-container #map containerId="map" [height]="2000">
   <svg-polygon *ngFor="let hexagon of hexagonList"
                [borderSize]="hexagon.borderSize"
                [borderColor]="hexagon.borderColor"
