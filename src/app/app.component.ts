@@ -13,7 +13,7 @@ interface Hexagon {
   clickedColour?: string;
   mouseOverColour?: string;
   mouseOutColour?: string;
-  clicked?: boolean;
+  selected?: boolean;
   territory?: Territory;
   location?: number[];
 }
@@ -60,27 +60,21 @@ export class AppComponent {
   w: number;
 
   constructor() {
+
+
     this.hexagon2DArray = _buildHexagonList(this.height, this.height);
 
     this.hexagonList = [].concat(...this.hexagon2DArray);
   }
 
-  coordToInt(numArr) {
-    return [parseInt(numArr[0].toString()), parseInt(numArr[1].toString())];
-  }
-
-  locationToCoord(location): string {
-    return (location[0] + location[1] * _multiplier()).toString()
-  }
-
   mouseOver(hexagon) {
-    if (!hexagon.clicked && hexagon.mouseOverColour) {
+    if (hexagon.selected && hexagon.mouseOverColour) {
       hexagon.fill = hexagon.mouseOverColour
     }
   }
 
   mouseOut(hexagon) {
-    if (!hexagon.clicked && hexagon.mouseOutColour) {
+    if (hexagon.selected && hexagon.mouseOutColour) {
       hexagon.fill = hexagon.mouseOutColour
     }
   }
@@ -90,13 +84,17 @@ export class AppComponent {
     if (   seedCoord[0] > 0 && seedCoord[0] < rowLength - 1 &&
       seedCoord[1] > 0 && seedCoord[1] < columnLength - 1) {
 
-      this.hexagonList.forEach(hex => hex.fill = 'rgba(100, 100, 20, 0.2)')
+      // this.hexagonList.forEach(hex => hex.fill = 'rgba(100, 100, 20, 0.2)')
 
       var selectedHexagonCodes = _selectHexagonsForTerritories(hexagon.location, this.territories);
 
       _setSelectedColours(selectedHexagonCodes, this.hexagon2DArray);
     }
   }
+}
+
+function _setHexSideLength(territoryCount){
+
 }
 
 function _setSelectedColours(codeList, hexagon2DArray) {
@@ -114,6 +112,10 @@ function _setSelectedColours(codeList, hexagon2DArray) {
 
       if (codeList.includes(_coordToCode([x, y]))) {
         //  selected
+
+        hex.selected = true;
+
+        hex.borderColor = 'rgba(200, 50, 50, 1)';
         hex.clickedColour = 'rgba(200, 50, 50, 0.8)';
         hex.mouseOverColour = 'rgba(200, 50, 50, 0.5)';
         hex.mouseOutColour = 'rgba(200, 50, 50, 0.2)';
@@ -121,9 +123,13 @@ function _setSelectedColours(codeList, hexagon2DArray) {
         hex.fill = hex.mouseOutColour;
       } else {
         //  border
-        hex.clickedColour = 'rgba(100, 100, 50, 0.8)';
-        hex.mouseOverColour = 'rgba(100, 100, 50, 0.5)';
-        hex.mouseOutColour = 'rgba(100, 100, 50, 0.2)';
+
+        hex.selected = false;
+
+        hex.borderColor = 'rgba(0, 0, 0, 0)';
+        // hex.clickedColour = 'rgba(200, 50, 50, 0.8)';
+        // hex.mouseOverColour = 'rgba(200, 50, 50, 0.5)';
+        hex.mouseOutColour = 'rgba(0, 0, 0, 0.3)';
 
         hex.fill = hex.mouseOutColour;
       }
@@ -147,11 +153,11 @@ function _selectHexagonsForTerritories(seedCoord, territories) {
 
       selectableOptions = selectableOptions.filter(code => code !== hexagonIndexCode);
 
-      selectableOptions.push(...[].concat(...selectedHexagonCodes.map(code => _getNewOptions(code, selectedHexagonCodes))));
+      // option 1
+      // selectableOptions.push(...[].concat(...selectedHexagonCodes.map(code => _getNewOptions(code, selectedHexagonCodes))));
 
-      // more spikey...
-      // selectableOptions.push(..._getNewOptions(hexagonIndexCode, selectedHexagonCodes));
-
+      // option 2
+      selectableOptions.push(..._getNewOptions(hexagonIndexCode, selectedHexagonCodes));
     }
   }
 
@@ -186,9 +192,9 @@ function _buildHexagonList(width, height) {
   var alternate = false;
   var hexagonList = [];
 
-  for (let x = a * 2; x <= (width - a * 2); x += a * 1.5) {
+  for (let x = a * 1.1 ; x <= (width - a * 2); x += a * 1.5) {
     var hexagonRow = []
-    for (let y = a * 2; y <= (height - a * 2); y += h) {
+    for (let y = a; y <= (height - a * 2); y += h) {
       var hex: Hexagon = _buildHexagon(x, alternate ? y + h / 2 : y)
       hex.location = [hexagonList.length, hexagonRow.length]
       hexagonRow.push(hex);
@@ -207,11 +213,9 @@ function _buildHexagon(x, y) {
     points: _calcHexagonCoOrds(x, y),
     centre: [x, y],
     borderSize: 2,
-    borderColor: 'rgba(125, 125, 32, 0.8)',
-    clickedColour: 'rgba(100, 100, 20, 0.8)',
-    mouseOverColour: 'rgba(100, 100, 20, 0.5)',
-    mouseOutColour: 'rgba(100, 100, 20, 0.2)',
-    fill: 'rgba(100, 100, 20, 0.2)'
+    selected: false,
+    borderColor: 'rgba(0, 0, 0, 0)',
+    fill: 'rgba(0, 0, 0, 0.3)'
   }
 }
 
@@ -222,7 +226,6 @@ function _calcHexagonCoOrds(x: number, y: number) {
     y + a * Math.sin(2 * Math.PI * i / 6)
   ]);
 }
-
 
 function getRandomArbitrary(min, max) {
   return Math.round(Math.random() * (max - min) + min);
