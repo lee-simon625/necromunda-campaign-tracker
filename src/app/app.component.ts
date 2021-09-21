@@ -18,7 +18,14 @@ interface Hexagon {
   location?: number[];
 }
 
+enum Mode {
+  Create,
+  Edit,
+  Read,
+}
+
 var a: number;
+
 var h: number;
 
 var rowLength: number;
@@ -34,6 +41,10 @@ export class AppComponent {
 
   hexagon2DArray: any[] = [];
   hexagonList: Hexagon[] = [];
+  selectedHexList: Hexagon[] = [];
+
+  mode: Mode = Mode.Create;
+
   territories = [
     {id: 1, gang_id: 1},
     {id: 2, gang_id: 1},
@@ -48,9 +59,6 @@ export class AppComponent {
     {id: 11, gang_id: 3},
     {id: 12, gang_id: 3},
   ]
-
-  @ViewChild('map')
-  map: ElementRef;
 
   height = 1000;
   viewBox = [0, 0, this.height, this.height];
@@ -77,15 +85,46 @@ export class AppComponent {
   }
 
   onClick(hexagon) {
-    var seedCoord = hexagon.location
+
+    switch (this.mode) {
+      case Mode.Create:
+        this.selectHexagonMap(hexagon);
+        this.mode = Mode.Edit;
+        break;
+      case Mode.Edit:
+
+        break;
+      case Mode.Read:
+
+        break;
+    }
+  }
+
+  selectHexagonMap(hex) {
+    var seedCoord = hex.location;
     if (seedCoord[0] > 0 && seedCoord[0] < rowLength - 1 &&
       seedCoord[1] > 0 && seedCoord[1] < columnLength - 1) {
 
-      var selectedHexagonCodes = _selectHexagonsForTerritories(hexagon.location, this.territories);
+      var selectedHexagonCodes = _selectHexagonsForTerritories(hex.location, this.territories.length);
 
+      this.selectedHexList = _codeListToHexList(selectedHexagonCodes, this.hexagon2DArray)
       _setSelectedColours(selectedHexagonCodes, this.hexagon2DArray);
     }
   }
+}
+
+function _codeListToHexList(codeList, hexagon2DArray) {
+  var hexList = [];
+
+  hexagon2DArray.forEach((row, x) => {
+    row.forEach((hex, y) => {
+      if (codeList.includes(_coordToCode([x, y]))) {
+        hexList.push(hex)
+      }
+    });
+  });
+
+  return hexList;
 }
 
 function _setHexSideLength(territoryCount): number {
@@ -99,10 +138,10 @@ function _setSelectedColours(codeList, hexagon2DArray) {
     row.forEach((hex, y) => {
       if (codeList.includes(_coordToCode([x, y]))) {
         //  selected
-        hex.borderColor = 'rgba(200, 50, 50, 1)';
-        hex.clickedColour = 'rgba(200, 50, 50, 0.8)';
-        hex.mouseOverColour = 'rgba(200, 50, 50, 0.5)';
-        hex.mouseOutColour = 'rgba(200, 50, 50, 0.2)';
+        hex.borderColor = 'rgba(50, 50, 50, 1)';
+        hex.clickedColour = 'rgba(50, 50, 50, 0.8)';
+        hex.mouseOverColour = 'rgba(50, 50, 50, 0.5)';
+        hex.mouseOutColour = 'rgba(50, 50, 50, 0.2)';
 
         hex.fill = hex.mouseOutColour;
         hex.selected = true;
@@ -121,11 +160,11 @@ function _setSelectedColours(codeList, hexagon2DArray) {
   });
 }
 
-function _selectHexagonsForTerritories(seedCoord, territories) {
+function _selectHexagonsForTerritories(seedCoord, territoriesLength) {
   var selectedHexagonCodes: number[] = [_coordToCode(seedCoord)];
   var selectableOptions: number[] = _getNewOptions(_coordToCode(seedCoord), selectedHexagonCodes);
 
-  while (selectedHexagonCodes.length < territories.length &&
+  while (selectedHexagonCodes.length < territoriesLength &&
   selectedHexagonCodes.length < (columnLength * rowLength) - ((columnLength - 1) * 2) + ((rowLength - 1) * 2)) {
 
     var hexagonIndexCode: number = selectableOptions[getRandomArbitrary(1, selectableOptions.length - 1)];
@@ -175,9 +214,9 @@ function _buildHexagonList(width, height) {
   var alternate = false;
   var hexagonList = [];
 
-  for (let x = a * 1.8; x <= (width - a); x += a * 1.5) {
+  for (let x = a * 1.5; x <= (width - a); x += a * 1.5) {
     var hexagonRow = []
-    for (let y = a; y <= (height - a * 2); y += h) {
+    for (let y = a * 1.25; y <= (height - a * 2); y += h) {
       var hex: Hexagon = _buildHexagon(x, alternate ? y + h / 2 : y)
       hex.location = [hexagonList.length, hexagonRow.length]
       hexagonRow.push(hex);

@@ -4,17 +4,15 @@
 <!--</div>-->
 
 
+<svg-container [viewBox]="viewBox" containerId="map" [height]="height">
+  <svg-polygon *ngFor="let hexagon of hexagonList"
+               [borderColor]="hexagon.borderColor"
+               [fill]="hexagon.fill"
+               [points]="hexagon.points"
+               (clickEvent)="onClick(hexagon)"
+               (mouseOverEvent)="mouseOver(hexagon)"
+               (mouseOutEvent)="mouseOut(hexagon)">
+  </svg-polygon>
+</svg-container>
 
-<div #map>
-  <svg-container [viewBox]="viewBox" containerId="map" [height]="height">
-    <svg-polygon *ngFor="let hexagon of hexagonList"
-                 [borderColor]="hexagon.borderColor"
-                 [fill]="hexagon.fill"
-                 [points]="hexagon.points"
-                 (clickEvent)="onClick(hexagon)"
-                 (mouseOverEvent)="mouseOver(hexagon)"
-                 (mouseOutEvent)="mouseOut(hexagon)">
-    </svg-polygon>
-  </svg-container>
-</div>
 
