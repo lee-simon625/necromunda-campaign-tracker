@@ -18,13 +18,8 @@ interface Hexagon {
   location?: number[];
 }
 
-const a = 80;
-
-// width
-// var w = a * 2;
-
-// height
-const h = Math.sqrt(3) * a;
+var a: number;
+var h: number;
 
 var rowLength: number;
 var columnLength: number;
@@ -40,22 +35,19 @@ export class AppComponent {
   hexagon2DArray: any[] = [];
   hexagonList: Hexagon[] = [];
   territories = [
-    {id: 1},
-    {id: 2},
-    {id: 3},
-    {id: 4},
-    {id: 5},
-    {id: 6},
-    {id: 7},
-    {id: 8},
-    {id: 9},
-    {id: 10},
-    {id: 11},
-    {id: 12},
+    {id: 1, gang_id: 1},
+    {id: 2, gang_id: 1},
+    {id: 3, gang_id: 2},
+    {id: 4, gang_id: 1},
+    {id: 5, gang_id: 1},
+    {id: 6, gang_id: 2},
+    {id: 7, gang_id: 2},
+    {id: 8, gang_id: 1},
+    {id: 9, gang_id: 1},
+    {id: 10, gang_id: 3},
+    {id: 11, gang_id: 3},
+    {id: 12, gang_id: 3},
   ]
-
-  h: number;
-  w: number;
 
   @ViewChild('map')
   map: ElementRef;
@@ -64,6 +56,8 @@ export class AppComponent {
   viewBox = [0, 0, this.height, this.height];
 
   constructor() {
+    a = _setHexSideLength(this.territories.length);
+    h = Math.sqrt(3) * a;
 
     this.hexagon2DArray = _buildHexagonList(this.height, this.height);
 
@@ -87,8 +81,6 @@ export class AppComponent {
     if (seedCoord[0] > 0 && seedCoord[0] < rowLength - 1 &&
       seedCoord[1] > 0 && seedCoord[1] < columnLength - 1) {
 
-      // this.hexagonList.forEach(hex => hex.fill = 'rgba(100, 100, 20, 0.2)')
-
       var selectedHexagonCodes = _selectHexagonsForTerritories(hexagon.location, this.territories);
 
       _setSelectedColours(selectedHexagonCodes, this.hexagon2DArray);
@@ -96,8 +88,10 @@ export class AppComponent {
   }
 }
 
-function _setHexSideLength(territoryCount) {
+function _setHexSideLength(territoryCount): number {
+  var decrementAccount = territoryCount > 9 ? territoryCount - 9 : 0
 
+  return 90 - (decrementAccount * 2)
 }
 
 function _setSelectedColours(codeList, hexagon2DArray) {
