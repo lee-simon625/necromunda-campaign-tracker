@@ -4,7 +4,7 @@ import {Campaign} from './domain/campaign.model';
 import {Gang} from 'src/app/domain/gang.model'
 import {Territory} from './domain/territory.model';
 import {MatButtonModule} from '@angular/material/button';
-import {MatStepperModule} from '@angular/material/stepper';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
 
 interface Hexagon {
   points: any[];
@@ -48,19 +48,21 @@ export class AppComponent {
 
   mode: Mode = Mode.New;
 
-  territories = [
-    {id: 1, gang_id: 1, name:"THIS IS NAME 1"},
-    {id: 2, gang_id: 1, name:"THIS IS NAME 2"},
-    {id: 3, gang_id: 2, name:"THIS IS NAME 3"},
-    {id: 4, gang_id: 1, name:"THIS IS NAME 4"},
-    {id: 5, gang_id: 1, name:"THIS IS NAME 5"},
-    {id: 6, gang_id: 2, name:"THIS IS NAME 6"},
-    {id: 7, gang_id: 2, name:"THIS IS NAME 7"},
-    {id: 8, gang_id: 1, name:"THIS IS NAME 8"},
-    {id: 9, gang_id: 1, name:"THIS IS NAME 9"},
-    {id: 10, gang_id: 3, name:"THIS IS NAME 10"},
-    {id: 11, gang_id: 3, name:"THIS IS NAME 11"},
-    {id: 12, gang_id: 3, name:"THIS IS NAME 12"},
+  currentTerritory: Territory;
+  assignedTerritoryCount: number = 0;
+  territories: Territory[] = [
+    {id: 1, gangID: 2, name: "THIS IS NAME 1"},
+    {id: 2, gangID: 1, name: "THIS IS NAME 2"},
+    {id: 3, name: "THIS IS NAME 3"},
+    {id: 4, name: "THIS IS NAME 4"},
+    {id: 5, name: "THIS IS NAME 5"},
+    {id: 6, name: "THIS IS NAME 6"},
+    {id: 7, name: "THIS IS NAME 7"},
+    {id: 8, name: "THIS IS NAME 8"},
+    {id: 9, name: "THIS IS NAME 9"},
+    {id: 10, gangID: 3, name: "THIS IS NAME 10"},
+    {id: 11, name: "THIS IS NAME 11"},
+    {id: 12, name: "THIS IS NAME 12"},
   ]
 
   height = 1000;
@@ -79,6 +81,12 @@ export class AppComponent {
     this.hexagonList = [].concat(...this.hexagon2DArray);
   }
 
+  percentageSelected(): number {
+    var total = this.territories.filter(terr => terr.gangID).length - 1
+
+    return !this.assignedTerritoryCount ? 0 : (total / 100) * this.assignedTerritoryCount;
+  }
+
   mouseOver(hexagon) {
     if (hexagon.selected && hexagon.mouseOverColour) {
       hexagon.fill = hexagon.mouseOverColour
@@ -93,6 +101,7 @@ export class AppComponent {
 
   acceptShape() {
     this.mode = Mode.Edit;
+    this.currentTerritory = _getNextTerritory(this.territories, this.assignedTerritoryCount);
   }
 
   createMode(): boolean {
@@ -134,10 +143,26 @@ export class AppComponent {
 
       var selectedHexagonCodes = _selectHexagonsForTerritories(hex.location, this.territories.length);
 
-      this.selectedHexList = _codeListToHexList(selectedHexagonCodes, this.hexagon2DArray)
+      this.selectedHexList = _codeListToHexList(selectedHexagonCodes, this.hexagon2DArray);
+      // this.selectedHexList.forEach((hex, i) => hex.territory = this.territories[i]);
+
       _setSelectedColours(selectedHexagonCodes, this.hexagon2DArray);
     }
   }
+}
+
+function _getNextTerritory(territories, completeCount) {
+  var ownedTerritories = 0;
+
+  territories.forEach(territory => {
+    if (territory.gangID) {
+      ownedTerritories++
+      if(completeCount < ownedTerritories)
+        return territory;
+    }
+  })
+
+  return null;
 }
 
 function _codeListToHexList(codeList, hexagon2DArray) {
@@ -165,10 +190,27 @@ function _setSelectedColours(codeList, hexagon2DArray) {
     row.forEach((hex, y) => {
       if (codeList.includes(_coordToCode([x, y]))) {
         //  selected
-        hex.borderColor = 'rgba(50, 50, 50, 1)';
-        hex.clickedColour = 'rgba(50, 50, 50, 0.8)';
-        hex.mouseOverColour = 'rgba(50, 50, 50, 0.5)';
-        hex.mouseOutColour = 'rgba(50, 50, 50, 0.2)';
+        var r = 50;
+        var g = 50;
+        var b = 50;
+
+        if (hex.territory && hex.territory.gangID)
+          switch (hex.territory.gangID) {
+            case 1:
+              r = 200
+              break;
+            case 2:
+              g = 200
+              break;
+            case 3:
+              b = 200
+              break;
+          }
+
+        hex.borderColor = 'rgba(' + r + ', ' + g + ', ' + b + ', 1)';
+        hex.clickedColour = 'rgba(' + r + ', ' + g + ', ' + b + ', 0.8)';
+        hex.mouseOverColour = 'rgba(' + r + ', ' + g + ', ' + b + ', 0.5)';
+        hex.mouseOutColour = 'rgba(' + r + ', ' + g + ', ' + b + ', 0.2)';
 
         hex.fill = hex.mouseOutColour;
         hex.selected = true;
@@ -206,7 +248,11 @@ function _selectHexagonsForTerritories(seedCoord, territoriesLength) {
       // selectableOptions.push(...[].concat(...selectedHexagonCodes.map(code => _getNewOptions(code, selectedHexagonCodes))));
 
       // option 2
+      // selectableOptions.push(..._getNewOptions(hexagonIndexCode, selectedHexagonCodes));
+
+      // option 3
       selectableOptions.push(..._getNewOptions(hexagonIndexCode, selectedHexagonCodes));
+      selectableOptions = [...new Set(selectableOptions)];
     }
   }
 
