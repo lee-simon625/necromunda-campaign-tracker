@@ -4,6 +4,7 @@ import {Campaign} from './domain/campaign.model';
 import {Gang} from 'src/app/domain/gang.model'
 import {Territory} from './domain/territory.model';
 
+
 interface Hexagon {
   points: any[];
   centre: number[];
@@ -19,6 +20,7 @@ interface Hexagon {
 }
 
 enum Mode {
+  New,
   Create,
   Edit,
   Read,
@@ -39,11 +41,11 @@ var columnLength: number;
 export class AppComponent {
   // title = 'Necromunda Campaign Tracker';
 
-  hexagon2DArray: any[] = [];
-  hexagonList: Hexagon[] = [];
-  selectedHexList: Hexagon[] = [];
+  hexagon2DArray: Hexagon[][];
+  hexagonList: Hexagon[];
+  selectedHexList: Hexagon[];
 
-  mode: Mode = Mode.Create;
+  mode: Mode = Mode.New;
 
   territories = [
     {id: 1, gang_id: 1},
@@ -67,7 +69,11 @@ export class AppComponent {
     a = _setHexSideLength(this.territories.length);
     h = Math.sqrt(3) * a;
 
-    this.hexagon2DArray = _buildHexagonList(this.height, this.height);
+    if (this.hexagon2DArray) {
+      this.mode = Mode.Read
+    } else {
+      this.hexagon2DArray = _buildHexagonList(this.height, this.height);
+    }
 
     this.hexagonList = [].concat(...this.hexagon2DArray);
   }
@@ -84,12 +90,32 @@ export class AppComponent {
     }
   }
 
+  acceptShape() {
+    this.mode = Mode.Edit;
+  }
+
+  createMode(): boolean {
+    return this.mode == Mode.Create;
+  }
+
+  editMode(): boolean {
+    return this.mode == Mode.Edit;
+  }
+
+  readMode(): boolean {
+    return this.mode == Mode.Read;
+  }
+
   onClick(hexagon) {
 
     switch (this.mode) {
+      case Mode.New:
+        this.selectHexagonMap(hexagon);
+        if (this.selectedHexList)
+          this.mode = Mode.Create
+        break;
       case Mode.Create:
         this.selectHexagonMap(hexagon);
-        this.mode = Mode.Edit;
         break;
       case Mode.Edit:
 

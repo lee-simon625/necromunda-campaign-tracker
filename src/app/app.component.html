@@ -3,6 +3,11 @@
 <!--  <router-outlet></router-outlet>-->
 <!--</div>-->
 
+<button mat-raised-button color="primary"
+        (click)="acceptShape()"
+        [hidden]="!createMode()">
+  Accept Shape
+</button>
 
 <svg-container [viewBox]="viewBox" containerId="map" [height]="height">
   <svg-polygon *ngFor="let hexagon of hexagonList"
