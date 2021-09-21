@@ -19,6 +19,9 @@ import { TerritoriesEditComponent } from './presentation/edit-campaign/territori
 import { CampaignEditComponent } from './presentation/edit-campaign/campaign-edit/campaign-edit.component';
 import { CampaignwizardComponent } from './presentation/campaignwizard/campaignwizard/campaignwizard.component';
 import { NgxSvgModule } from 'ngx-svg';
+import {MatButtonModule} from '@angular/material/button';
+import {MatStepperModule} from "@angular/material/stepper";
+import {MatProgressBarModule} from "@angular/material/progress-bar";
 
 const appRoutes: Routes = [
   { path: '', component: HomeComponent },
@@ -45,11 +48,14 @@ const appRoutes: Routes = [
     BrowserModule,
     HttpClientModule,
     RouterModule.forRoot(appRoutes,
-      { enableTracing: true }),
+      {enableTracing: true}),
     MatDialogModule,
     FormsModule,
     BrowserAnimationsModule,
-    NgxSvgModule
+    NgxSvgModule,
+    MatButtonModule,
+    MatStepperModule,
+    MatProgressBarModule
   ],
   entryComponents: [
     CampaignSelectorComponent,

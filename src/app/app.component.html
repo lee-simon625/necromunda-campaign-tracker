@@ -2,12 +2,16 @@
 <!--  <h1 style="text-align:center">{{title}}</h1>-->
 <!--  <router-outlet></router-outlet>-->
 <!--</div>-->
-
 <button mat-raised-button color="primary"
-        (click)="acceptShape()"
-        [hidden]="!createMode()">
+        [disabled]="!createMode()"
+        (click)="acceptShape()">
   Accept Shape
 </button>
+
+<div *ngFor="let territory of territories">
+  <p>{{territory.name}}</p>
+  <mat-progress-bar mode="determinate" value=></mat-progress-bar>
+</div>
 
 <svg-container [viewBox]="viewBox" containerId="map" [height]="height">
   <svg-polygon *ngFor="let hexagon of hexagonList"

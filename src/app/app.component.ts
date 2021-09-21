@@ -3,7 +3,8 @@ import {CampaignService} from './data/campaign.service';
 import {Campaign} from './domain/campaign.model';
 import {Gang} from 'src/app/domain/gang.model'
 import {Territory} from './domain/territory.model';
-
+import {MatButtonModule} from '@angular/material/button';
+import {MatStepperModule} from '@angular/material/stepper';
 
 interface Hexagon {
   points: any[];
@@ -48,18 +49,18 @@ export class AppComponent {
   mode: Mode = Mode.New;
 
   territories = [
-    {id: 1, gang_id: 1},
-    {id: 2, gang_id: 1},
-    {id: 3, gang_id: 2},
-    {id: 4, gang_id: 1},
-    {id: 5, gang_id: 1},
-    {id: 6, gang_id: 2},
-    {id: 7, gang_id: 2},
-    {id: 8, gang_id: 1},
-    {id: 9, gang_id: 1},
-    {id: 10, gang_id: 3},
-    {id: 11, gang_id: 3},
-    {id: 12, gang_id: 3},
+    {id: 1, gang_id: 1, name:"THIS IS NAME 1"},
+    {id: 2, gang_id: 1, name:"THIS IS NAME 2"},
+    {id: 3, gang_id: 2, name:"THIS IS NAME 3"},
+    {id: 4, gang_id: 1, name:"THIS IS NAME 4"},
+    {id: 5, gang_id: 1, name:"THIS IS NAME 5"},
+    {id: 6, gang_id: 2, name:"THIS IS NAME 6"},
+    {id: 7, gang_id: 2, name:"THIS IS NAME 7"},
+    {id: 8, gang_id: 1, name:"THIS IS NAME 8"},
+    {id: 9, gang_id: 1, name:"THIS IS NAME 9"},
+    {id: 10, gang_id: 3, name:"THIS IS NAME 10"},
+    {id: 11, gang_id: 3, name:"THIS IS NAME 11"},
+    {id: 12, gang_id: 3, name:"THIS IS NAME 12"},
   ]
 
   height = 1000;
