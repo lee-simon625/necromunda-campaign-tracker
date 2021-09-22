@@ -128,6 +128,12 @@ export class AppComponent {
     {id: 7, name: "TERRITORY NAME 7"},
     {id: 8, name: "TERRITORY NAME 8"},
     {id: 9, name: "TERRITORY NAME 9"},
+    {id: 4, name: "TERRITORY NAME 4"},
+    {id: 5, name: "TERRITORY NAME 5"},
+    {id: 6, name: "TERRITORY NAME 6"},
+    {id: 7, name: "TERRITORY NAME 7"},
+    {id: 8, name: "TERRITORY NAME 8"},
+    {id: 9, name: "TERRITORY NAME 9"},
     {id: 10, gangID: 3, name: "TERRITORY NAME 10"},
     {id: 11, name: "TERRITORY NAME 11"},
     {id: 12, name: "TERRITORY NAME 12"},
@@ -300,12 +306,12 @@ function _selectHexagonsForTerritories(seedCoord, territoriesLength) {
       // option 1
       // selectableOptions.push(...[].concat(...selectedHexagonCodes.map(code => _getNewOptions(code, selectedHexagonCodes))));
 
-      // option 2
-      // selectableOptions.push(..._getNewOptions(hexagonIndexCode, selectedHexagonCodes));
+      // option 2 (FAV)
+      selectableOptions.push(..._getNewOptions(hexagonIndexCode, selectedHexagonCodes));
 
       // option 3
-      selectableOptions.push(..._getNewOptions(hexagonIndexCode, selectedHexagonCodes));
-      selectableOptions = [...new Set(selectableOptions)];
+      // selectableOptions.push(..._getNewOptions(hexagonIndexCode, selectedHexagonCodes));
+      // selectableOptions = [...new Set(selectableOptions)];
     }
   }
 
