@@ -6,7 +6,7 @@ import {Territory} from './domain/territory.model';
 import {MatButtonModule} from '@angular/material/button';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 
-interface Hexagon {
+class Hexagon {
   points: any[];
   centre: number[];
   borderSize: number;
@@ -18,6 +18,46 @@ interface Hexagon {
   selected?: boolean;
   territory?: Territory;
   location?: number[];
+
+  setColour(selected: boolean) {
+    if (selected) {
+      //  selected
+      var r = 50;
+      var g = 50;
+      var b = 50;
+
+      if (this.territory && this.territory.gangID)
+        switch (this.territory.gangID) {
+          case 1:
+            r = 200
+            break;
+          case 2:
+            g = 200
+            break;
+          case 3:
+            b = 200
+            break;
+        }
+
+      this.borderColor = 'rgba(' + r + ', ' + g + ', ' + b + ', 1)';
+      this.clickedColour = 'rgba(' + r + ', ' + g + ', ' + b + ', 0.8)';
+      this.mouseOverColour = 'rgba(' + r + ', ' + g + ', ' + b + ', 0.5)';
+      this.mouseOutColour = 'rgba(' + r + ', ' + g + ', ' + b + ', 0.2)';
+
+      this.fill = this.mouseOutColour;
+      this.selected = true;
+
+    } else {
+      //  border
+      this.borderColor = 'rgba(0, 0, 0, 0)';
+      this.clickedColour = 'rgba(0, 0, 0, 0.3)';
+      this.mouseOverColour = 'rgba(0, 0, 0, 0.3)';
+      this.mouseOutColour = 'rgba(0, 0, 0, 0.3)';
+
+      this.fill = this.mouseOutColour;
+      this.selected = false;
+    }
+  }
 }
 
 enum Mode {
@@ -50,6 +90,7 @@ export class AppComponent {
 
   currentTerritory: Territory;
   assignedTerritoryCount: number = 0;
+  editPercent = 0;
   territories: Territory[] = [
     {id: 1, gangID: 2, name: "THIS IS NAME 1"},
     {id: 2, gangID: 1, name: "THIS IS NAME 2"},
@@ -81,10 +122,32 @@ export class AppComponent {
     this.hexagonList = [].concat(...this.hexagon2DArray);
   }
 
-  percentageSelected(): number {
-    var total = this.territories.filter(terr => terr.gangID).length - 1
+  onClick(hexagon) {
+    console.log("The mode when clicked is : " + this.mode);
+    switch (this.mode) {
+      case Mode.New:
+        this.selectHexagonMap(hexagon);
+        if (this.selectedHexList)
+          this.mode = Mode.Create
+        break;
+      case Mode.Create:
+        this.selectHexagonMap(hexagon);
+        break;
+      case Mode.Edit:
+        this.setTerritory(hexagon);
+        break;
+      case Mode.Read:
 
-    return !this.assignedTerritoryCount ? 0 : (total / 100) * this.assignedTerritoryCount;
+        break;
+    }
+  }
+
+  setPercentageSelected() {
+    var total = this.territories.filter(terr => terr.gangID).length
+
+    var val = this.assignedTerritoryCount / (total / 100);
+
+    this.editPercent = val;
   }
 
   mouseOver(hexagon) {
@@ -104,6 +167,17 @@ export class AppComponent {
     this.mode = Mode.Edit;
   }
 
+  setTerritory(hex) {
+    hex.territory = this.currentTerritory;
+    this.assignedTerritoryCount++
+    this.currentTerritory = _getNextTerritory(this.territories, this.assignedTerritoryCount);
+    this.setPercentageSelected();
+
+    if (this.currentTerritory == null) {
+      this.mode = Mode.Read;
+    }
+  }
+
   createMode(): boolean {
     return this.mode == Mode.Create;
   }
@@ -114,26 +188,6 @@ export class AppComponent {
 
   readMode(): boolean {
     return this.mode == Mode.Read;
-  }
-
-  onClick(hexagon) {
-    console.log("The mode when clicked is : " + this.mode);
-    switch (this.mode) {
-      case Mode.New:
-        this.selectHexagonMap(hexagon);
-        if (this.selectedHexList)
-          this.mode = Mode.Create
-        break;
-      case Mode.Create:
-        this.selectHexagonMap(hexagon);
-        break;
-      case Mode.Edit:
-
-        break;
-      case Mode.Read:
-
-        break;
-    }
   }
 
   selectHexagonMap(hex) {
@@ -189,43 +243,8 @@ function _setHexSideLength(territoryCount): number {
 function _setSelectedColours(codeList, hexagon2DArray) {
   hexagon2DArray.forEach((row, x) => {
     row.forEach((hex, y) => {
-      if (codeList.includes(_coordToCode([x, y]))) {
-        //  selected
-        var r = 50;
-        var g = 50;
-        var b = 50;
-
-        if (hex.territory && hex.territory.gangID)
-          switch (hex.territory.gangID) {
-            case 1:
-              r = 200
-              break;
-            case 2:
-              g = 200
-              break;
-            case 3:
-              b = 200
-              break;
-          }
-
-        hex.borderColor = 'rgba(' + r + ', ' + g + ', ' + b + ', 1)';
-        hex.clickedColour = 'rgba(' + r + ', ' + g + ', ' + b + ', 0.8)';
-        hex.mouseOverColour = 'rgba(' + r + ', ' + g + ', ' + b + ', 0.5)';
-        hex.mouseOutColour = 'rgba(' + r + ', ' + g + ', ' + b + ', 0.2)';
-
-        hex.fill = hex.mouseOutColour;
-        hex.selected = true;
-
-      } else {
-        //  border
-        hex.borderColor = 'rgba(0, 0, 0, 0)';
-        hex.clickedColour = 'rgba(0, 0, 0, 0.3)';
-        hex.mouseOverColour = 'rgba(0, 0, 0, 0.3)';
-        hex.mouseOutColour = 'rgba(0, 0, 0, 0.3)';
-
-        hex.fill = hex.mouseOutColour;
-        hex.selected = false;
-      }
+      // letting the hex know if it is selected or not
+      hex.setColour(codeList.includes(_coordToCode([x, y])));
     });
   });
 }

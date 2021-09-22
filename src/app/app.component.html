@@ -10,7 +10,7 @@
 
 <div *ngIf="editMode()">
   <p>{{currentTerritory.name}}</p>
-  <mat-progress-bar mode="determinate" [value]="percentageSelected()"></mat-progress-bar>
+  <mat-progress-bar mode="determinate" [value]="editPercent"></mat-progress-bar>
 </div>
 
 <svg-container [viewBox]="viewBox" containerId="map" [height]="height">
