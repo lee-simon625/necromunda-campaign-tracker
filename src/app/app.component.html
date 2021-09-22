@@ -2,15 +2,27 @@
 <!--  <h1 style="text-align:center">{{title}}</h1>-->
 <!--  <router-outlet></router-outlet>-->
 <!--</div>-->
-<button mat-raised-button color="primary"
-        [disabled]="!createMode()"
-        (click)="acceptShape()">
-  Accept Shape
-</button>
+<div style="display: flex; flex-direction: row; height:100px; padding: 20px;">
 
-<div *ngIf="editMode()">
-  <p>{{currentTerritory.name}}</p>
-  <mat-progress-bar mode="determinate" [value]="editPercent"></mat-progress-bar>
+  <button mat-raised-button color="primary" style="flex: 1; padding: 0px 10px"
+          [disabled]="!createMode()"
+          (click)="acceptShape()">
+    Accept Shape
+  </button>
+
+  <div
+    style="flex: 5; display: flex; flex-direction: column; justify-content: flex-end; align-content: center; padding: 0px 10px">
+    <p *ngIf="editMode()" style="flex: auto;">{{currentTerritory.name}}</p>
+    <mat-progress-bar style="flex: auto;" [mode]="progressMode" [value]="editPercent"
+                      [bufferValue]="100"></mat-progress-bar>
+  </div>
+
+  <div
+    style="flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-content: center; padding: 0px 10px">
+    <button mat-raised-button color="primary" style="flex: auto;">Save</button>
+    <button mat-raised-button color="warn" style="flex: auto;">Refresh</button>
+  </div>
+
 </div>
 
 <svg-container [viewBox]="viewBox" containerId="map" [height]="height">

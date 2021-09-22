@@ -4,11 +4,12 @@ import {Campaign} from './domain/campaign.model';
 import {Gang} from 'src/app/domain/gang.model'
 import {Territory} from './domain/territory.model';
 import {MatButtonModule} from '@angular/material/button';
-import {MatProgressBarModule} from '@angular/material/progress-bar';
+import {MatProgressBarModule, ProgressBarMode} from '@angular/material/progress-bar';
 
 class Hexagon {
   points: any[];
   centre: number[];
+  sideLength: number;
   borderSize: number;
   borderColor?: string;
   fill?: string;
@@ -19,8 +20,35 @@ class Hexagon {
   territory?: Territory;
   location?: number[];
 
-  setColour(selected: boolean) {
-    if (selected) {
+  constructor(x: number, y: number, sideLength: number) {
+    this.sideLength = sideLength;
+    this.centre = [x, y]
+    this.borderSize = 2
+    this.selected = false
+    this.calcHexagonCoOrds();
+    this.setColour();
+  }
+
+  // given an x,y location this builds the points for <polygon>
+  calcHexagonCoOrds() {
+    this.points = Array.from(Array(6).keys()).map(i => [
+      this.centre[0] + this.sideLength * Math.cos(2 * Math.PI * i / 6),
+      this.centre[1] + this.sideLength * Math.sin(2 * Math.PI * i / 6)
+    ]);
+  }
+
+  setSelected(selected) {
+    this.selected = selected;
+    this.setColour();
+  }
+
+  setTerritory(territory) {
+    this.territory = territory;
+    this.setColour();
+  }
+
+  setColour() {
+    if (this.selected) {
       //  selected
       var r = 50;
       var g = 50;
@@ -45,7 +73,6 @@ class Hexagon {
       this.mouseOutColour = 'rgba(' + r + ', ' + g + ', ' + b + ', 0.2)';
 
       this.fill = this.mouseOutColour;
-      this.selected = true;
 
     } else {
       //  border
@@ -55,7 +82,6 @@ class Hexagon {
       this.mouseOutColour = 'rgba(0, 0, 0, 0.3)';
 
       this.fill = this.mouseOutColour;
-      this.selected = false;
     }
   }
 }
@@ -91,6 +117,7 @@ export class AppComponent {
   currentTerritory: Territory;
   assignedTerritoryCount: number = 0;
   editPercent = 0;
+  progressMode: ProgressBarMode = "buffer"
   territories: Territory[] = [
     {id: 1, gangID: 2, name: "THIS IS NAME 1"},
     {id: 2, gangID: 1, name: "THIS IS NAME 2"},
@@ -116,7 +143,7 @@ export class AppComponent {
     if (this.hexagon2DArray) {
       this.mode = Mode.Read
     } else {
-      this.hexagon2DArray = _buildHexagonList(this.height, this.height);
+      this.hexagon2DArray = _buildHexagonList(this.height, this.height, a);
     }
 
     this.hexagonList = [].concat(...this.hexagon2DArray);
@@ -165,10 +192,11 @@ export class AppComponent {
   acceptShape() {
     this.currentTerritory = _getNextTerritory(this.territories, this.assignedTerritoryCount);
     this.mode = Mode.Edit;
+    this.progressMode = "determinate";
   }
 
-  setTerritory(hex) {
-    hex.territory = this.currentTerritory;
+  setTerritory(hex: Hexagon) {
+    hex.setTerritory(this.currentTerritory);
     this.assignedTerritoryCount++
     this.currentTerritory = _getNextTerritory(this.territories, this.assignedTerritoryCount);
     this.setPercentageSelected();
@@ -191,6 +219,7 @@ export class AppComponent {
   }
 
   selectHexagonMap(hex) {
+    this.hexagonList.forEach(hex => hex.setSelected(false));
     var seedCoord = hex.location;
     if (seedCoord[0] > 0 && seedCoord[0] < rowLength - 1 &&
       seedCoord[1] > 0 && seedCoord[1] < columnLength - 1) {
@@ -198,9 +227,8 @@ export class AppComponent {
       var selectedHexagonCodes = _selectHexagonsForTerritories(hex.location, this.territories.length);
 
       this.selectedHexList = _codeListToHexList(selectedHexagonCodes, this.hexagon2DArray);
-      // this.selectedHexList.forEach((hex, i) => hex.territory = this.territories[i]);
 
-      _setSelectedColours(selectedHexagonCodes, this.hexagon2DArray);
+      this.selectedHexList.forEach(hex => hex.setSelected(true))
     }
   }
 }
@@ -240,15 +268,6 @@ function _setHexSideLength(territoryCount): number {
   return 90 - (decrementAccount * 2)
 }
 
-function _setSelectedColours(codeList, hexagon2DArray) {
-  hexagon2DArray.forEach((row, x) => {
-    row.forEach((hex, y) => {
-      // letting the hex know if it is selected or not
-      hex.setColour(codeList.includes(_coordToCode([x, y])));
-    });
-  });
-}
-
 function _selectHexagonsForTerritories(seedCoord, territoriesLength) {
   var selectedHexagonCodes: number[] = [_coordToCode(seedCoord)];
   var selectableOptions: number[] = _getNewOptions(_coordToCode(seedCoord), selectedHexagonCodes);
@@ -285,9 +304,7 @@ function _getNewOptions(hexagonIndexCode, selectedHexagonCodes): number[] {
     coord[1] > 0 && coord[1] < columnLength - 1
   )
 
-  var codes = allowedCoords.map(coord => _coordToCode(coord));
-
-  return codes.filter(code => !selectedHexagonCodes.includes(code));
+  return allowedCoords.map(coord => _coordToCode(coord)).filter(code => !selectedHexagonCodes.includes(code));
 }
 
 function _generateSurroundingHexagonCodes(coord: number[]) {
@@ -303,14 +320,14 @@ function _generateSurroundingHexagonCodes(coord: number[]) {
   ]
 }
 
-function _buildHexagonList(width, height) {
+function _buildHexagonList(width, height, sideLength) {
   var alternate = false;
   var hexagonList = [];
 
   for (let x = a * 1.5; x <= (width - a); x += a * 1.5) {
     var hexagonRow = []
     for (let y = a * 1.25; y <= (height - a * 2); y += h) {
-      var hex: Hexagon = _buildHexagon(x, alternate ? y + h / 2 : y)
+      var hex: Hexagon = new Hexagon(x, alternate ? y + h / 2 : y, sideLength)
       hex.location = [hexagonList.length, hexagonRow.length]
       hexagonRow.push(hex);
     }
@@ -321,27 +338,6 @@ function _buildHexagonList(width, height) {
   rowLength = hexagonList.length;
   columnLength = hexagonList[0].length;
   return hexagonList;
-}
-
-function _buildHexagon(x, y) {
-  return {
-    points: _calcHexagonCoOrds(x, y),
-    centre: [x, y],
-    borderSize: 2,
-    selected: false,
-    borderColor: 'rgba(0, 0, 0, 0)',
-    clickedColour: 'rgba(0, 0, 0, 0.3)',
-    mouseOverColour: 'rgba(0, 0, 0, 0.3)',
-    fill: 'rgba(0, 0, 0, 0.3)'
-  }
-}
-
-// given an x,y location this builds the points for <polygon>
-function _calcHexagonCoOrds(x: number, y: number) {
-  return Array.from(Array(6).keys()).map(i => [
-    x + a * Math.cos(2 * Math.PI * i / 6),
-    y + a * Math.sin(2 * Math.PI * i / 6)
-  ]);
 }
 
 function getRandomArbitrary(min, max) {
