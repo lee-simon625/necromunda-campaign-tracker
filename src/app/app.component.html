@@ -8,7 +8,7 @@
   Accept Shape
 </button>
 
-<div *ngIf="currentTerritory">
+<div *ngIf="editMode()">
   <p>{{currentTerritory.name}}</p>
   <mat-progress-bar mode="determinate" [value]="percentageSelected()"></mat-progress-bar>
 </div>

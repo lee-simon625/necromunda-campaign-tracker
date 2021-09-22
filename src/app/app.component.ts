@@ -100,8 +100,8 @@ export class AppComponent {
   }
 
   acceptShape() {
-    this.mode = Mode.Edit;
     this.currentTerritory = _getNextTerritory(this.territories, this.assignedTerritoryCount);
+    this.mode = Mode.Edit;
   }
 
   createMode(): boolean {
@@ -109,7 +109,7 @@ export class AppComponent {
   }
 
   editMode(): boolean {
-    return this.mode == Mode.Edit;
+    return (this.mode == Mode.Edit && !!this.currentTerritory);
   }
 
   readMode(): boolean {
@@ -117,7 +117,7 @@ export class AppComponent {
   }
 
   onClick(hexagon) {
-
+    console.log("The mode when clicked is : " + this.mode);
     switch (this.mode) {
       case Mode.New:
         this.selectHexagonMap(hexagon);
@@ -153,16 +153,17 @@ export class AppComponent {
 
 function _getNextTerritory(territories, completeCount) {
   var ownedTerritories = 0;
-
+  var terr: Territory = null;
   territories.forEach(territory => {
     if (territory.gangID) {
+      if (completeCount == ownedTerritories) {
+        terr = territory;
+      }
       ownedTerritories++
-      if(completeCount < ownedTerritories)
-        return territory;
     }
-  })
+  });
 
-  return null;
+  return terr;
 }
 
 function _codeListToHexList(codeList, hexagon2DArray) {
