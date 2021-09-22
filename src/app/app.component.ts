@@ -119,18 +119,18 @@ export class AppComponent {
   editPercent = 0;
   progressMode: ProgressBarMode = "buffer"
   territories: Territory[] = [
-    {id: 1, gangID: 2, name: "THIS IS NAME 1"},
-    {id: 2, gangID: 1, name: "THIS IS NAME 2"},
-    {id: 3, name: "THIS IS NAME 3"},
-    {id: 4, name: "THIS IS NAME 4"},
-    {id: 5, name: "THIS IS NAME 5"},
-    {id: 6, name: "THIS IS NAME 6"},
-    {id: 7, name: "THIS IS NAME 7"},
-    {id: 8, name: "THIS IS NAME 8"},
-    {id: 9, name: "THIS IS NAME 9"},
-    {id: 10, gangID: 3, name: "THIS IS NAME 10"},
-    {id: 11, name: "THIS IS NAME 11"},
-    {id: 12, name: "THIS IS NAME 12"},
+    {id: 1, gangID: 2, name: "TERRITORY NAME 1"},
+    {id: 2, gangID: 1, name: "TERRITORY NAME 2"},
+    {id: 3, name: "TERRITORY NAME 3"},
+    {id: 4, name: "TERRITORY NAME 4"},
+    {id: 5, name: "TERRITORY NAME 5"},
+    {id: 6, name: "TERRITORY NAME 6"},
+    {id: 7, name: "TERRITORY NAME 7"},
+    {id: 8, name: "TERRITORY NAME 8"},
+    {id: 9, name: "TERRITORY NAME 9"},
+    {id: 10, gangID: 3, name: "TERRITORY NAME 10"},
+    {id: 11, name: "TERRITORY NAME 11"},
+    {id: 12, name: "TERRITORY NAME 12"},
   ]
 
   height = 1000;
@@ -201,9 +201,7 @@ export class AppComponent {
     this.currentTerritory = _getNextTerritory(this.territories, this.assignedTerritoryCount);
     this.setPercentageSelected();
 
-    if (this.currentTerritory == null) {
-      this.mode = Mode.Read;
-    }
+
   }
 
   createMode(): boolean {
@@ -211,11 +209,27 @@ export class AppComponent {
   }
 
   editMode(): boolean {
-    return (this.mode == Mode.Edit && !!this.currentTerritory);
+    return this.mode == Mode.Edit && !!this.currentTerritory;
+  }
+
+  confirmReady(): boolean {
+    return this.mode == Mode.Edit && this.editPercent == 100
   }
 
   readMode(): boolean {
     return this.mode == Mode.Read;
+  }
+
+  save() {
+    console.log("SAVE!!!!!");
+    this.mode = Mode.Read;
+  }
+
+  refreshEdit() {
+    this.hexagonList.forEach(hex => hex.setTerritory(null));
+    this.editPercent = 0;
+    this.assignedTerritoryCount = 0;
+    this.currentTerritory = _getNextTerritory(this.territories, this.assignedTerritoryCount);
   }
 
   selectHexagonMap(hex) {

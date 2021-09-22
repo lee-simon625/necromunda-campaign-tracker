@@ -4,23 +4,33 @@
 <!--</div>-->
 <div style="display: flex; flex-direction: row; height:100px; padding: 20px;">
 
-  <button mat-raised-button color="primary" style="flex: 1; padding: 0px 10px"
-          [disabled]="!createMode()"
-          (click)="acceptShape()">
-    Accept Shape
-  </button>
+  <div
+    style="flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-content: center; padding: 0px 10px">
+    <button mat-raised-button color="primary" style="flex: auto;"
+            [disabled]="!createMode()"
+            (click)="acceptShape()">
+      Accept Shape
+    </button>
+  </div>
+
 
   <div
-    style="flex: 5; display: flex; flex-direction: column; justify-content: flex-end; align-content: center; padding: 0px 10px">
-    <p *ngIf="editMode()" style="flex: auto;">{{currentTerritory.name}}</p>
-    <mat-progress-bar style="flex: auto;" [mode]="progressMode" [value]="editPercent"
-                      [bufferValue]="100"></mat-progress-bar>
+    style="flex: 5; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding: 0px 10px">
+    <div style="flex: auto; padding-top:20px">
+      <p *ngIf="editMode()">{{currentTerritory.name}} - Owned by Gang: {{currentTerritory.gangID}}</p>
+    </div>
+    <mat-progress-bar [mode]="progressMode" [value]="editPercent" [bufferValue]="0"></mat-progress-bar>
   </div>
 
   <div
     style="flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-content: center; padding: 0px 10px">
-    <button mat-raised-button color="primary" style="flex: auto;">Save</button>
-    <button mat-raised-button color="warn" style="flex: auto;">Refresh</button>
+    <button mat-raised-button color="primary" style="flex: auto;"
+            [disabled]="!confirmReady()"
+            (click)="save()">Save</button>
+    <div style="padding-top: 10px"></div>
+    <button mat-raised-button color="warn" style="flex: auto;"
+            [disabled]="!confirmReady()"
+            (click)="refreshEdit()">Refresh</button>
   </div>
 
 </div>
