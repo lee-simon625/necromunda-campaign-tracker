@@ -5,26 +5,29 @@ import {Gang} from 'src/app/domain/gang.model'
 import {Territory} from './domain/territory.model';
 import {MatButtonModule} from '@angular/material/button';
 import {MatProgressBarModule, ProgressBarMode} from '@angular/material/progress-bar';
+import {seleniumWebDriverKeyMap} from "@angular/cdk/testing/selenium-webdriver/selenium-webdriver-keys";
 
 class Hexagon {
   points: any[];
   centre: number[];
   sideLength: number;
-  borderSize: number;
+  borderSize: number = 2;
   borderColor?: string;
   fill?: string;
   clickedColour?: string;
   mouseOverColour?: string;
   mouseOutColour?: string;
-  selected?: boolean;
+  selected: boolean = false;
+  border: boolean = false;
   territory?: Territory;
-  location?: number[];
+  coord?: number[];
+  code?: number;
+  surroundingHexagons?: Hexagon[]
+  hidden: boolean = false;
 
   constructor(x: number, y: number, sideLength: number) {
     this.sideLength = sideLength;
-    this.centre = [x, y]
-    this.borderSize = 2
-    this.selected = false
+    this.centre = [x, y];
     this.calcHexagonCoOrds();
     this.setColour();
   }
@@ -42,47 +45,96 @@ class Hexagon {
     this.setColour();
   }
 
+  setHidden() {
+    if (!!this.surroundingHexagons) {
+      this.hidden = this.surroundingHexagons.filter(hex => hex.selected == true).length == 0;
+      this.setColour();
+    }
+
+  }
+
   setTerritory(territory) {
     this.territory = territory;
     this.setColour();
   }
 
+  setCoord(i, j) {
+    this.coord = [i, j];
+  }
+
+  setCode(multiplier) {
+    this.code = this.coord[0] + this.coord[1] * multiplier;
+  }
+
   setColour() {
-    if (this.selected) {
-      //  selected
-      var r = 50;
-      var g = 50;
-      var b = 50;
-
-      if (this.territory && this.territory.gangID)
-        switch (this.territory.gangID) {
-          case 1:
-            r = 200
-            break;
-          case 2:
-            g = 200
-            break;
-          case 3:
-            b = 200
-            break;
-        }
-
-      this.borderColor = 'rgba(' + r + ', ' + g + ', ' + b + ', 1)';
-      this.clickedColour = 'rgba(' + r + ', ' + g + ', ' + b + ', 0.8)';
-      this.mouseOverColour = 'rgba(' + r + ', ' + g + ', ' + b + ', 0.5)';
-      this.mouseOutColour = 'rgba(' + r + ', ' + g + ', ' + b + ', 0.2)';
-
-      this.fill = this.mouseOutColour;
-
-    } else {
-      //  border
+    if (this.hidden) {
       this.borderColor = 'rgba(0, 0, 0, 0)';
-      this.clickedColour = 'rgba(0, 0, 0, 0.3)';
-      this.mouseOverColour = 'rgba(0, 0, 0, 0.3)';
-      this.mouseOutColour = 'rgba(0, 0, 0, 0.3)';
+      this.clickedColour = 'rgba(0, 0, 0, 0)';
+      this.mouseOverColour = 'rgba(0, 0, 0, 0)';
+      this.mouseOutColour = 'rgba(0, 0, 0, 0)';
 
       this.fill = this.mouseOutColour;
+    } else {
+      if (this.selected) {
+        //  selected
+        var r = 50;
+        var g = 50;
+        var b = 50;
+
+        if (this.territory && this.territory.gangID)
+          switch (this.territory.gangID) {
+            case 1:
+              r = 200
+              break;
+            case 2:
+              g = 200
+              break;
+            case 3:
+              b = 200
+              break;
+          }
+
+        this.borderColor = 'rgba(' + r + ', ' + g + ', ' + b + ', 1)';
+        this.clickedColour = 'rgba(' + r + ', ' + g + ', ' + b + ', 0.8)';
+        this.mouseOverColour = 'rgba(' + r + ', ' + g + ', ' + b + ', 0.5)';
+        this.mouseOutColour = 'rgba(' + r + ', ' + g + ', ' + b + ', 0.2)';
+
+        this.fill = this.mouseOutColour;
+
+      } else {
+        //  border
+        this.borderColor = 'rgba(0, 0, 0, 0)';
+        this.clickedColour = 'rgba(0, 0, 0, 0.3)';
+        this.mouseOverColour = this.border ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.27)';
+        this.mouseOutColour = 'rgba(0, 0, 0, 0.3)';
+
+        this.fill = this.mouseOutColour;
+      }
     }
+  }
+
+  assigneSurroundingHexagons(hex2dArray: Hexagon[][]) {
+    const evenOddAdjust = (this.coord[0] % 2 == 0) ? -1 : 1;
+
+    var surroundingCoords = [
+      [this.coord[0], this.coord[1] + 1],
+      [this.coord[0], this.coord[1] - 1],
+      [this.coord[0] - 1, this.coord[1]],
+      [this.coord[0] + 1, this.coord[1]],
+      [this.coord[0] - 1, this.coord[1] + evenOddAdjust],
+      [this.coord[0] + 1, this.coord[1] + evenOddAdjust],
+    ]
+
+    this.surroundingHexagons = surroundingCoords.filter(coord =>
+      coord[0] >= 0 && coord[0] < rowLength &&
+      coord[1] >= 0 && coord[1] < columnLength
+    ).map(coord => {
+      return hex2dArray[coord[0]][coord[1]]
+    });
+  }
+
+  getAdditionalOptions(selectedHexagons) {
+    return this.surroundingHexagons.filter(hex => !hex.border && !selectedHexagons.includes(hex));
   }
 }
 
@@ -156,6 +208,9 @@ export class AppComponent {
   }
 
   onClick(hexagon) {
+    if (hexagon.border)
+      return;
+
     console.log("The mode when clicked is : " + this.mode);
     switch (this.mode) {
       case Mode.New:
@@ -184,18 +239,20 @@ export class AppComponent {
   }
 
   mouseOver(hexagon) {
-    if (hexagon.selected && hexagon.mouseOverColour) {
+    if (hexagon.mouseOverColour && !hexagon.border) {
       hexagon.fill = hexagon.mouseOverColour
     }
   }
 
   mouseOut(hexagon) {
-    if (hexagon.selected && hexagon.mouseOutColour) {
+    if (hexagon.mouseOutColour && !hexagon.border) {
       hexagon.fill = hexagon.mouseOutColour
     }
   }
 
   acceptShape() {
+    this.hexagonList.forEach(hex => hex.setHidden());
+
     this.currentTerritory = _getNextTerritory(this.territories, this.assignedTerritoryCount);
     this.mode = Mode.Edit;
     this.progressMode = "determinate";
@@ -206,12 +263,10 @@ export class AppComponent {
     this.assignedTerritoryCount++
     this.currentTerritory = _getNextTerritory(this.territories, this.assignedTerritoryCount);
     this.setPercentageSelected();
-
-
   }
 
   createMode(): boolean {
-    return this.mode == Mode.Create;
+    return this.mode == Mode.Create && !!this.selectedHexList && this.selectedHexList.length > 0;
   }
 
   editMode(): boolean {
@@ -238,19 +293,19 @@ export class AppComponent {
     this.currentTerritory = _getNextTerritory(this.territories, this.assignedTerritoryCount);
   }
 
-  selectHexagonMap(hex) {
+  selectHexagonMap(hex: Hexagon) {
     this.hexagonList.forEach(hex => hex.setSelected(false));
-    var seedCoord = hex.location;
-    if (seedCoord[0] > 0 && seedCoord[0] < rowLength - 1 &&
-      seedCoord[1] > 0 && seedCoord[1] < columnLength - 1) {
 
-      var selectedHexagonCodes = _selectHexagonsForTerritories(hex.location, this.territories.length);
+    this.selectedHexList = _selectHexagonsForTerritories(hex, this.territories.length);
 
-      this.selectedHexList = _codeListToHexList(selectedHexagonCodes, this.hexagon2DArray);
-
-      this.selectedHexList.forEach(hex => hex.setSelected(true))
-    }
+    this.selectedHexList.forEach(hex => hex.setSelected(true));
   }
+}
+
+function _setHexSideLength(territoryCount): number {
+  var decrementAccount = territoryCount > 9 ? territoryCount - 9 : 0
+
+  return 90 - (decrementAccount * 2)
 }
 
 function _getNextTerritory(territories, completeCount) {
@@ -268,108 +323,64 @@ function _getNextTerritory(territories, completeCount) {
   return terr;
 }
 
-function _codeListToHexList(codeList, hexagon2DArray) {
-  var hexList = [];
+function _selectHexagonsForTerritories(seedHex, territoriesLength) {
+  var selectedHexagons: Hexagon[] = [seedHex];
+  var selectableOptions: Hexagon[] = seedHex.getAdditionalOptions(selectedHexagons)
 
-  hexagon2DArray.forEach((row, x) => {
-    row.forEach((hex, y) => {
-      if (codeList.includes(_coordToCode([x, y]))) {
-        hexList.push(hex)
-      }
-    });
-  });
+  while (selectedHexagons.length < territoriesLength &&
+  selectedHexagons.length < (columnLength * rowLength) - ((columnLength - 1) * 2) + ((rowLength - 1) * 2)) {
 
-  return hexList;
-}
+    var selectedHexagon: Hexagon = selectableOptions[getRandomArbitrary(1, selectableOptions.length - 1)];
 
-function _setHexSideLength(territoryCount): number {
-  var decrementAccount = territoryCount > 9 ? territoryCount - 9 : 0
+    selectedHexagons.push(selectedHexagon);
 
-  return 90 - (decrementAccount * 2)
-}
+    selectableOptions = selectableOptions.filter(hex => hex !== selectedHexagon);
 
-function _selectHexagonsForTerritories(seedCoord, territoriesLength) {
-  var selectedHexagonCodes: number[] = [_coordToCode(seedCoord)];
-  var selectableOptions: number[] = _getNewOptions(_coordToCode(seedCoord), selectedHexagonCodes);
+    // option 1 broken
+    // selectableOptions.push(...[].concat(...selectedHexagonCodes.map(code => _getNewOptions(code, selectedHexagonCodes))));
 
-  while (selectedHexagonCodes.length < territoriesLength &&
-  selectedHexagonCodes.length < (columnLength * rowLength) - ((columnLength - 1) * 2) + ((rowLength - 1) * 2)) {
+    // option 2 (FAV)
+    selectableOptions.push(...selectedHexagon.getAdditionalOptions(selectedHexagons));
 
-    var hexagonIndexCode: number = selectableOptions[getRandomArbitrary(1, selectableOptions.length - 1)];
-
-    if (!selectedHexagonCodes.includes(hexagonIndexCode)) {
-
-      selectedHexagonCodes.push(hexagonIndexCode);
-
-      selectableOptions = selectableOptions.filter(code => code !== hexagonIndexCode);
-
-      // option 1
-      // selectableOptions.push(...[].concat(...selectedHexagonCodes.map(code => _getNewOptions(code, selectedHexagonCodes))));
-
-      // option 2 (FAV)
-      selectableOptions.push(..._getNewOptions(hexagonIndexCode, selectedHexagonCodes));
-
-      // option 3
-      // selectableOptions.push(..._getNewOptions(hexagonIndexCode, selectedHexagonCodes));
-      // selectableOptions = [...new Set(selectableOptions)];
-    }
+    // option 3 broken
+    // selectableOptions.push(..._getNewOptions(hexagonIndexCode, selectedHexagonCodes));
+    // selectableOptions = [...new Set(selectableOptions)];
   }
 
-  return selectedHexagonCodes;
-}
-
-function _getNewOptions(hexagonIndexCode, selectedHexagonCodes): number[] {
-  var allowedCoords = _generateSurroundingHexagonCodes(_codeToCoord(hexagonIndexCode)).filter(coord =>
-    coord[0] > 0 && coord[0] < rowLength - 1 &&
-    coord[1] > 0 && coord[1] < columnLength - 1
-  )
-
-  return allowedCoords.map(coord => _coordToCode(coord)).filter(code => !selectedHexagonCodes.includes(code));
-}
-
-function _generateSurroundingHexagonCodes(coord: number[]) {
-  const evenOddAdjust = (coord[0] % 2 == 0) ? -1 : 1;
-
-  return [
-    [coord[0], coord[1] + 1],
-    [coord[0], coord[1] - 1],
-    [coord[0] - 1, coord[1]],
-    [coord[0] + 1, coord[1]],
-    [coord[0] - 1, coord[1] + evenOddAdjust],
-    [coord[0] + 1, coord[1] + evenOddAdjust],
-  ]
+  return selectedHexagons;
 }
 
 function _buildHexagonList(width, height, sideLength) {
   var alternate = false;
-  var hexagonList = [];
+  var hexagon2DList = [];
 
   for (let x = a * 1.5; x <= (width - a); x += a * 1.5) {
     var hexagonRow = []
     for (let y = a * 1.25; y <= (height - a * 2); y += h) {
       var hex: Hexagon = new Hexagon(x, alternate ? y + h / 2 : y, sideLength)
-      hex.location = [hexagonList.length, hexagonRow.length]
+      hex.setCoord(hexagon2DList.length, hexagonRow.length);
       hexagonRow.push(hex);
     }
     alternate = !alternate
-    hexagonList.push(hexagonRow);
+    hexagon2DList.push(hexagonRow);
   }
 
-  rowLength = hexagonList.length;
-  columnLength = hexagonList[0].length;
-  return hexagonList;
+  rowLength = hexagon2DList.length;
+  columnLength = hexagon2DList[0].length;
+
+  hexagon2DList.forEach(column => column.forEach(hex => {
+    hex.setCode(_multiplier());
+    hex.assigneSurroundingHexagons(hexagon2DList);
+    if (hex.coord[0] == 0 || hex.coord[1] == 0 || hex.coord[0] == rowLength - 1 || hex.coord[1] == columnLength - 1) {
+      hex.border = true;
+    }
+  }));
+
+  return hexagon2DList;
 }
 
 function getRandomArbitrary(min, max) {
   return Math.round(Math.random() * (max - min) + min);
-}
-
-function _codeToCoord(hexagonIndexCode: number) {
-  return [hexagonIndexCode % _multiplier(), parseInt((hexagonIndexCode / _multiplier()).toString())]
-}
-
-function _coordToCode(hexagonCoord: number[]) {
-  return hexagonCoord[0] + hexagonCoord[1] * _multiplier();
 }
 
 function _multiplier() {
