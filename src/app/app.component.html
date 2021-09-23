@@ -3,10 +3,9 @@
 <!--  <router-outlet></router-outlet>-->
 <!--</div>-->
 <div #title style="display: flex; flex-direction: column;">
-  <div style="flex: auto; display: flex; flex-direction: row; height:100px; padding: 20px;">
+  <div style="flex: auto; display: flex; flex-direction: row; height:50px; padding-top: 10px">
 
-    <div
-      style="flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-content: center; padding: 0px 10px">
+    <div style="flex: 3; display: flex; padding: 0px 10px">
       <button mat-raised-button color="primary" style="flex: auto;"
               [disabled]="!createMode()"
               (click)="acceptShape()">
@@ -15,25 +14,27 @@
     </div>
 
     <div
-      style="flex: 5; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding: 0px 10px">
-      <div style="flex: auto; padding-top:20px">
+      style="flex: 10; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding: 0px 10px">
+      <div style="flex: auto;">
         <p *ngIf="editMode()">{{currentTerritory.name}} - Owned by Gang: {{currentTerritory.gangID}}</p>
       </div>
       <mat-progress-bar [mode]="progressMode" [value]="editPercent" [bufferValue]="0"></mat-progress-bar>
     </div>
 
-    <div
-      style="flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-content: center; padding: 0px 10px">
+    <div style="flex: 3; display: flex; padding: 0px 10px">
+      <button mat-raised-button color="warn" style="flex: auto;"
+              [disabled]="!editMode()"
+              (click)="refreshEdit()">Refresh
+      </button>
+    </div>
+
+    <div style="flex: 3; display: flex; padding: 0px 10px">
       <button mat-raised-button color="primary" style="flex: auto;"
               [disabled]="!confirmReady()"
               (click)="save()">Save
       </button>
-      <div style="padding-top: 10px"></div>
-      <button mat-raised-button color="warn" style="flex: auto;"
-              [disabled]="!confirmReady()"
-              (click)="refreshEdit()">Refresh
-      </button>
     </div>
+
   </div>
 
   <svg-container style="flex: auto;" [viewBox]="viewBox" preserveAspectRatio="xMinYMin meet" containerId="map"
