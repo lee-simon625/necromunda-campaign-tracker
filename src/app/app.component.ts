@@ -23,7 +23,8 @@ class Hexagon {
   coord?: number[];
   code?: number;
   surroundingHexagons?: Hexagon[]
-  hidden: boolean = false;
+  hidden?: boolean = false;
+  selectionFinished?: boolean = false;
 
   constructor(x: number, y: number, sideLength: number) {
     this.sideLength = sideLength;
@@ -40,17 +41,22 @@ class Hexagon {
     ]);
   }
 
+  hoverable(): boolean {
+    return this.selected || (!this.border && this.selectionFinished)
+  }
+
   setSelected(selected) {
     this.selected = selected;
     this.setColour();
   }
 
-  setHidden() {
+  selectionComplete() {
+    this.selectionFinished = true;
+
     if (!!this.surroundingHexagons) {
       this.hidden = this.surroundingHexagons.filter(hex => hex.selected == true).length == 0;
       this.setColour();
     }
-
   }
 
   setTerritory(territory) {
@@ -105,7 +111,7 @@ class Hexagon {
         //  border
         this.borderColor = 'rgba(0, 0, 0, 0)';
         this.clickedColour = 'rgba(0, 0, 0, 0.3)';
-        this.mouseOverColour = this.border ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.27)';
+        this.mouseOverColour = this.hoverable() ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.27)';
         this.mouseOutColour = 'rgba(0, 0, 0, 0.3)';
 
         this.fill = this.mouseOutColour;
@@ -184,6 +190,14 @@ export class AppComponent {
     {id: 5, name: "TERRITORY NAME 5"},
     {id: 6, name: "TERRITORY NAME 6"},
     {id: 7, name: "TERRITORY NAME 7"},
+    {id: 6, name: "TERRITORY NAME 6"},
+    {id: 7, name: "TERRITORY NAME 7"},
+    {id: 8, name: "TERRITORY NAME 8"},
+    {id: 9, name: "TERRITORY NAME 9"},
+    {id: 4, name: "TERRITORY NAME 4"},
+    {id: 5, name: "TERRITORY NAME 5"},
+    {id: 6, name: "TERRITORY NAME 6"},
+    {id: 7, name: "TERRITORY NAME 7"},
     {id: 8, name: "TERRITORY NAME 8"},
     {id: 9, name: "TERRITORY NAME 9"},
     {id: 10, gangID: 3, name: "TERRITORY NAME 10"},
@@ -222,7 +236,9 @@ export class AppComponent {
         this.selectHexagonMap(hexagon);
         break;
       case Mode.Edit:
-        this.setTerritory(hexagon);
+        if (hexagon.selected && !hexagon.territory && !this.confirmReady()) {
+          this.setTerritory(hexagon);
+        }
         break;
       case Mode.Read:
 
@@ -251,7 +267,7 @@ export class AppComponent {
   }
 
   acceptShape() {
-    this.hexagonList.forEach(hex => hex.setHidden());
+    this.hexagonList.forEach(hex => hex.selectionComplete());
 
     this.currentTerritory = _getNextTerritory(this.territories, this.assignedTerritoryCount);
     this.mode = Mode.Edit;
