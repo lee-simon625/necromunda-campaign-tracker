@@ -24,10 +24,9 @@ export class GenerateMapComponent {
 
   mode: Mode = Mode.New;
 
-  currentTerritory: Territory;
-  assignedTerritoryCount: number = 0;
   editPercent = 0;
   progressMode: ProgressBarMode = "buffer"
+  assignableTerritories: Territory[] = [];
 
   territories: Territory[] = [
     {id: 1, name: "TERRITORY NAME 1", gangID: 2},
@@ -78,8 +77,13 @@ export class GenerateMapComponent {
         this.selectHexagonMap(hexagon);
         break;
       case Mode.Edit:
-        if (hexagon.selected && !hexagon.territory && !this.confirmReady()) {
-          this.setTerritory(hexagon);
+        if (hexagon.selected && !this.confirmReady()) {
+          if (hexagon.territory) {
+            this.assignableTerritories.unshift(hexagon.territory);
+            this.setPercentageSelected();
+          } else {
+            this.setTerritory(hexagon);
+          }
         }
         break;
       case Mode.Read:
@@ -89,11 +93,9 @@ export class GenerateMapComponent {
   }
 
   setPercentageSelected() {
-    var total = this.territories.filter(terr => terr.gangID).length
+    var territoryCount = this.territories.filter(terr => terr.gangID).length;
 
-    var val = this.assignedTerritoryCount / (total / 100);
-
-    this.editPercent = val;
+    this.editPercent = (territoryCount - this.assignableTerritories.length) / (territoryCount / 100);
   }
 
   mouseOver(hexagon) {
@@ -111,15 +113,14 @@ export class GenerateMapComponent {
   acceptShape() {
     this.hexagonList.forEach(hex => hex.selectionComplete());
 
-    this.currentTerritory = _getNextTerritory(this.territories, this.assignedTerritoryCount);
+    this.assignableTerritories = this.territories.filter(terr => terr.gangID);
     this.mode = Mode.Edit;
     this.progressMode = "determinate";
   }
 
   setTerritory(hex: Hexagon) {
-    hex.setTerritory(this.currentTerritory);
-    this.assignedTerritoryCount++
-    this.currentTerritory = _getNextTerritory(this.territories, this.assignedTerritoryCount);
+    hex.setTerritory(this.assignableTerritories[0]);
+    this.assignableTerritories.shift();
     this.setPercentageSelected();
   }
 
@@ -132,7 +133,7 @@ export class GenerateMapComponent {
   }
 
   addingTerritoriesMode(): boolean {
-    return this.editMode() && !!this.currentTerritory;
+    return this.editMode() && this.assignableTerritories.length > 0;
   }
 
   confirmReady(): boolean {
@@ -152,9 +153,8 @@ export class GenerateMapComponent {
 
   refreshEdit() {
     this.hexagonList.forEach(hex => hex.setTerritory(null));
-    this.editPercent = 0;
-    this.assignedTerritoryCount = 0;
-    this.currentTerritory = _getNextTerritory(this.territories, this.assignedTerritoryCount);
+    this.assignableTerritories = this.territories.filter(terr => terr.gangID);
+    this.setPercentageSelected();
   }
 
   rowLength():number {
@@ -187,21 +187,6 @@ export class GenerateMapComponent {
   }
 }
 
-function _getNextTerritory(territories, completeCount) {
-  var ownedTerritories = 0;
-  var terr: Territory = null;
-  territories.forEach(territory => {
-    if (territory.gangID) {
-      if (completeCount == ownedTerritories) {
-        terr = territory;
-      }
-      ownedTerritories++
-    }
-  });
-
-  return terr;
-}
-
 function _selectHexagonsForTerritories(seedHex, territoriesLength, hexagonArea) {
   var selectedHexagons: Hexagon[] = [seedHex];
   var selectableOptions: Hexagon[] = seedHex.getAdditionalOptions(selectedHexagons)
@@ -209,7 +194,7 @@ function _selectHexagonsForTerritories(seedHex, territoriesLength, hexagonArea) 
   while (selectedHexagons.length < territoriesLength &&
   selectedHexagons.length < hexagonArea) {
 
-    var selectedHexagon: Hexagon = selectableOptions[getRandomArbitrary(1, selectableOptions.length - 1)];
+    var selectedHexagon: Hexagon = selectableOptions[_getRandomArbitrary(1, selectableOptions.length - 1)];
 
     selectedHexagons.push(selectedHexagon);
 
@@ -248,6 +233,6 @@ function _buildHexagonList(width, height, sideLength) {
   return hexagon2DList;
 }
 
-function getRandomArbitrary(min, max) {
+function _getRandomArbitrary(min, max) {
   return Math.round(Math.random() * (max - min) + min);
 }
