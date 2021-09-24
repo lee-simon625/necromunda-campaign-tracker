@@ -3,7 +3,6 @@ import {Territory} from "./territory.model";
 export class Hexagon {
   points: any[];
   sideLength: number;
-  borderColor?: string;
   fill?: string;
   clickedColour?: string;
   mouseOverColour?: string;
@@ -63,7 +62,6 @@ export class Hexagon {
 
   setColour() {
     if (this.hidden) {
-      this.borderColor = 'rgba(0, 0, 0, 0)';
       this.clickedColour = 'rgba(0, 0, 0, 0)';
       this.mouseOverColour = 'rgba(0, 0, 0, 0)';
       this.mouseOutColour = 'rgba(0, 0, 0, 0)';
@@ -89,7 +87,6 @@ export class Hexagon {
               break;
           }
 
-        this.borderColor = 'rgba(' + r + ', ' + g + ', ' + b + ', 1)';
         this.clickedColour = 'rgba(' + r + ', ' + g + ', ' + b + ', 0.8)';
         this.mouseOverColour = 'rgba(' + r + ', ' + g + ', ' + b + ', 0.5)';
         this.mouseOutColour = 'rgba(' + r + ', ' + g + ', ' + b + ', 0.2)';
@@ -98,10 +95,9 @@ export class Hexagon {
 
       } else {
         //  border
-        this.borderColor = 'rgba(0, 0, 0, 0)';
-        this.clickedColour = 'rgba(0, 0, 0, 0.3)';
-        this.mouseOverColour = this.hoverable() ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.27)';
-        this.mouseOutColour = 'rgba(0, 0, 0, 0.3)';
+        this.clickedColour = 'rgba(0, 0, 0, 0.2)';
+        this.mouseOverColour = this.hoverable() ? 'rgba(0, 0, 0, 0.2)' : 'rgba(0, 0, 0, 0.17)';
+        this.mouseOutColour = 'rgba(0, 0, 0, 0.2)';
 
         this.fill = this.mouseOutColour;
       }
