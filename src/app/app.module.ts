@@ -22,6 +22,7 @@ import { NgxSvgModule } from 'ngx-svg';
 import {MatButtonModule} from '@angular/material/button';
 import {MatStepperModule} from "@angular/material/stepper";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
+import { GenerateMapComponent } from './presentation/campaignwizard/generate-map/generate-map.component';
 
 const appRoutes: Routes = [
   { path: '', component: HomeComponent },
@@ -41,7 +42,8 @@ const appRoutes: Routes = [
     GangsEditComponent,
     TerritoriesEditComponent,
     CampaignEditComponent,
-    CampaignwizardComponent
+    CampaignwizardComponent,
+    GenerateMapComponent
 
   ],
   imports: [
