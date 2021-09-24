@@ -1,0 +1,50 @@
+<!--<div style="display:flex; flex-direction: column; ">-->
+<!--  <h1 style="text-align:center">{{title}}</h1>-->
+<!--  <router-outlet></router-outlet>-->
+<!--</div>-->
+<div #title style="display: flex; flex-direction: column;">
+  <div style="flex: auto; display: flex; flex-direction: row; height:50px; padding-top: 10px">
+
+    <div style="flex: 3; display: flex; padding: 0px 10px">
+      <button mat-raised-button color="primary" style="flex: auto;"
+              [disabled]="!createMode()"
+              (click)="acceptShape()">
+        Accept Shape
+      </button>
+    </div>
+
+    <div
+      style="flex: 10; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding: 0px 10px">
+      <div style="flex: auto;">
+        <p *ngIf="addingTerritoriesMode()">{{currentTerritory.name}} - Owned by Gang: {{currentTerritory.gangID}}</p>
+      </div>
+      <mat-progress-bar [mode]="progressMode" [value]="editPercent" [bufferValue]="0"></mat-progress-bar>
+    </div>
+
+    <div style="flex: 3; display: flex; padding: 0px 10px">
+      <button mat-raised-button color="warn" style="flex: auto;"
+              [disabled]="!editMode()"
+              (click)="refreshEdit()">Refresh
+      </button>
+    </div>
+
+    <div style="flex: 3; display: flex; padding: 0px 10px">
+      <button mat-raised-button color="primary" style="flex: auto;"
+              [disabled]="!confirmReady()"
+              (click)="save()">Save
+      </button>
+    </div>
+  </div>
+
+  <svg-container style="flex: auto;" [viewBox]="viewBox" preserveAspectRatio="xMinYMin meet" containerId="map"
+                 [height]="title.offsetWidth">
+    <svg-polygon *ngFor="let hexagon of hexagonList"
+                 [borderColor]="'rgba(0, 0, 0, 0)'"
+                 [fill]="hexagon.fill"
+                 [points]="hexagon.points"
+                 (clickEvent)="onClick(hexagon)"
+                 (mouseOverEvent)="mouseOver(hexagon)"
+                 (mouseOutEvent)="mouseOut(hexagon)">
+    </svg-polygon>
+  </svg-container>
+</div>
