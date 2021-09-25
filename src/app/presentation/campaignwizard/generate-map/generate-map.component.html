@@ -18,7 +18,7 @@
       <div style="flex: auto;">
         <p *ngIf="addingTerritoriesMode()">{{assignableTerritories[0].name}} - Owned by Gang: {{assignableTerritories[0].gangID}}</p>
       </div>
-      <mat-progress-bar [mode]="progressMode" [value]="editPercent" [bufferValue]="0"></mat-progress-bar>
+      <mat-progress-bar [mode]="progressMode" [value]="percentageSelected()" [bufferValue]="0"></mat-progress-bar>
     </div>
 
     <div style="flex: 3; display: flex; padding: 0px 10px">

@@ -24,26 +24,25 @@ export class GenerateMapComponent {
 
   mode: Mode = Mode.New;
 
-  editPercent = 0;
   progressMode: ProgressBarMode = "buffer"
   assignableTerritories: Territory[] = [];
 
   territories: Territory[] = [
     {id: 1, name: "TERRITORY NAME 1", gangID: 2},
-    {id: 2, name: "TERRITORY NAME 2", gangID: 1},
-    {id: 3, name: "TERRITORY NAME 3", gangID: 1},
-    {id: 4, name: "TERRITORY NAME 4", gangID: 2},
-    {id: 5, name: "TERRITORY NAME 5", gangID: 2},
-    {id: 6, name: "TERRITORY NAME 6", gangID: 2},
-    {id: 7, name: "TERRITORY NAME 7", gangID: 3},
-    {id: 8, name: "TERRITORY NAME 8", gangID: 1},
-    {id: 8, name: "TERRITORY NAME 9", gangID: 1},
+    {id: 2, name: "TERRITORY NAME 2"},
+    {id: 3, name: "TERRITORY NAME 3"},
+    {id: 4, name: "TERRITORY NAME 4"},
+    {id: 5, name: "TERRITORY NAME 5"},
+    {id: 6, name: "TERRITORY NAME 6"},
+    {id: 7, name: "TERRITORY NAME 7"},
+    {id: 8, name: "TERRITORY NAME 8"},
+    {id: 8, name: "TERRITORY NAME 9"},
     {id: 10, name: "TERRITORY NAME 10", gangID: 3},
     {id: 8, name: "TERRITORY NAME 8", gangID: 1},
-    {id: 8, name: "TERRITORY NAME 9", gangID: 1},
-    {id: 10, name: "TERRITORY NAME 10", gangID: 3},
-    {id: 11, name: "TERRITORY NAME 11", gangID: 3},
-    {id: 12, name: "TERRITORY NAME 12", gangID: 3},
+    {id: 8, name: "TERRITORY NAME 9"},
+    {id: 10, name: "TERRITORY NAME 10"},
+    {id: 11, name: "TERRITORY NAME 11"},
+    {id: 12, name: "TERRITORY NAME 12"},
   ]
 
   height = 2000;
@@ -79,8 +78,7 @@ export class GenerateMapComponent {
       case Mode.Edit:
         if (hexagon.selected && !this.confirmReady()) {
           if (hexagon.territory) {
-            this.assignableTerritories.unshift(hexagon.territory);
-            this.setPercentageSelected();
+            this.removeTerritory(hexagon);
           } else {
             this.setTerritory(hexagon);
           }
@@ -92,10 +90,13 @@ export class GenerateMapComponent {
     }
   }
 
-  setPercentageSelected() {
-    var territoryCount = this.territories.filter(terr => terr.gangID).length;
+  percentageSelected() : number {
+    if (!this.editMode()) {
+      return 0;
+    }
 
-    this.editPercent = (territoryCount - this.assignableTerritories.length) / (territoryCount / 100);
+    var territoryCount = this.territories.filter(terr => terr.gangID).length;
+    return (territoryCount - this.assignableTerritories.length) / (territoryCount / 100);
   }
 
   mouseOver(hexagon) {
@@ -118,10 +119,14 @@ export class GenerateMapComponent {
     this.progressMode = "determinate";
   }
 
+  removeTerritory(hexagon:Hexagon) {
+    this.assignableTerritories.unshift(hexagon.territory);
+    hexagon.setTerritory(null);
+  }
+
   setTerritory(hex: Hexagon) {
     hex.setTerritory(this.assignableTerritories[0]);
     this.assignableTerritories.shift();
-    this.setPercentageSelected();
   }
 
   createMode(): boolean {
@@ -137,7 +142,7 @@ export class GenerateMapComponent {
   }
 
   confirmReady(): boolean {
-    return this.editMode() && this.editPercent == 100
+    return this.editMode() && this.percentageSelected() == 100
   }
 
   readMode(): boolean {
@@ -147,14 +152,13 @@ export class GenerateMapComponent {
   save() {
     console.log("SAVE!!!!!");
     this.progressMode = "buffer";
-    this.editPercent = 0;
     this.mode = Mode.Read;
   }
 
   refreshEdit() {
     this.hexagonList.forEach(hex => hex.setTerritory(null));
     this.assignableTerritories = this.territories.filter(terr => terr.gangID);
-    this.setPercentageSelected();
+    this.percentageSelected();
   }
 
   rowLength():number {
