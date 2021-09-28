@@ -1,6 +1,7 @@
 <p>Welcome to the necromunda campaign tracker!</p>
 
-
+<div style="display: flex">
+<div style="flex: 1">
 <ul>
     <li>
         <button mat-raised-button (click)="viewCampaign()">View Campaigns</button>
@@ -9,7 +10,7 @@
         <button mat-raised-button (click)="newCampaign()">New Campaign</button>
     </li>
 </ul>
-
+</div>
 <!-- <ul>
     <li>
         <a [routerLink]="['/view', '1']" routerLinkActive="active">View Campaigns</a>
@@ -30,4 +31,5 @@
     </ul>
 </div> -->
 
-<app-generate-map></app-generate-map>
+<app-generate-map style="flex: 1;" [territories]="territories"></app-generate-map>
+</div>
