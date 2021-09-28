@@ -66,17 +66,20 @@ export class GenerateMapComponent {
       return;
 
     console.log("The mode when clicked is : " + this.mode);
+
     switch (this.mode) {
       case Mode.New:
         this.selectHexagonMap(hexagon);
         if (this.selectedHexList)
           this.mode = Mode.Create
         break;
+
       case Mode.Create:
         this.selectHexagonMap(hexagon);
         break;
+
       case Mode.Edit:
-        if (hexagon.selected && !this.confirmReady()) {
+        if (hexagon.selected) {
           if (hexagon.territory) {
             this.removeTerritory(hexagon);
           } else {
@@ -84,6 +87,7 @@ export class GenerateMapComponent {
           }
         }
         break;
+
       case Mode.Read:
 
         break;
